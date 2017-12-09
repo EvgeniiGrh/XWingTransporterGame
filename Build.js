@@ -91,6 +91,7 @@ const GAMEFIELD_OPTIONS = {
 
 
 const PLANET_OPTIONS = {
+    link: './src/images/LL.jpg',
     radius: 30,
     segmentsQuantity: 90
 };
@@ -107,6 +108,7 @@ const ASTEROID_OPTIONS = {
 
 
 const SKYBOX_OPTIONS = {
+    link: './src/images/hubble-min.jpg',
     radius: 600,
     segmentsQuantity: 200,
     rotationSpeed: 0.0005
@@ -115,6 +117,7 @@ const SKYBOX_OPTIONS = {
 
 
 const SPACESHIP_OPTIONS = {
+    link: './src/JSON_Models/spaceship.json',
     dimensions: 0.5,
     color: 0x000000,
     flyWidthBorder: window.innerWidth*0.002,
@@ -349,7 +352,7 @@ class SkyBox extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default 
 
     createMesh() {
         const uniforms = {
-            texture: { type: 't', value: new THREE.TextureLoader().load("src/images/hubble-min.jpg")}
+            texture: { type: 't', value: new THREE.TextureLoader().load(__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* SKYBOX_OPTIONS */].link)}
         };
 
         const material = new THREE.ShaderMaterial( {
@@ -429,7 +432,7 @@ class Planet extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default 
     }
 
     createMesh() {
-        const texture = new THREE.TextureLoader().load( "src/images/LL.jpg" );
+        const texture = new THREE.TextureLoader().load( __WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* PLANET_OPTIONS */].link );
         const geometry = new THREE.SphereGeometry(__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* PLANET_OPTIONS */].radius,__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* PLANET_OPTIONS */].segmentsQuantity,__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* PLANET_OPTIONS */].segmentsQuantity);
         const material = new THREE.MeshStandardMaterial({map: texture});
         this.mesh = new THREE.Mesh( geometry, material );
@@ -458,7 +461,7 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
     createMesh() {
         this.mesh=new THREE.Object3D();
         this.plane = new THREE.ObjectLoader();
-        this.plane.load( 'src/JSON_Models/spaceship.json', ( obj ) => {
+        this.plane.load( __WEBPACK_IMPORTED_MODULE_1__Constants__["f" /* SPACESHIP_OPTIONS */].link, ( obj ) => {
             this.mesh.add(obj);
         });
         this.setPosition();

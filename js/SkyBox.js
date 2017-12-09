@@ -1,5 +1,5 @@
 import ShapeCreator from "./ShapeCreator";
-import {GLSL_MODULES,SKYBOX_OPTIONS} from "./Constants";
+import {GLSL_MODULES, SKYBOX_OPTIONS} from "./Constants";
 
 export default class SkyBox extends ShapeCreator  {
 
@@ -9,7 +9,7 @@ export default class SkyBox extends ShapeCreator  {
 
     createMesh() {
         const uniforms = {
-            texture: { type: 't', value: new THREE.TextureLoader().load("src/images/hubble-min.jpg")}
+            texture: { type: 't', value: new THREE.TextureLoader().load(SKYBOX_OPTIONS.link)}
         };
 
         const material = new THREE.ShaderMaterial( {

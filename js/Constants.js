@@ -15,6 +15,7 @@ export const GAMEFIELD_OPTIONS = {
 };
 
 export const PLANET_OPTIONS = {
+    link: './src/images/LL.jpg',
     radius: 30,
     segmentsQuantity: 90
 };
@@ -27,12 +28,14 @@ export const ASTEROID_OPTIONS = {
 };
 
 export const SKYBOX_OPTIONS = {
+    link: './src/images/hubble-min.jpg',
     radius: 600,
     segmentsQuantity: 200,
     rotationSpeed: 0.0005
 };
 
 export const SPACESHIP_OPTIONS = {
+    link: './src/JSON_Models/spaceship.json',
     dimensions: 0.5,
     color: 0x000000,
     flyWidthBorder: window.innerWidth*0.002,
