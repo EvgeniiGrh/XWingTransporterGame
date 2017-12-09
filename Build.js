@@ -70,11 +70,18 @@
 "use strict";
 
 
+const GLSL_MODULES = {
+    sky_vertex: "varying vec2 vUV; void main() {vUV = uv;vec4 pos = vec4(position, 1.0);gl_Position = projectionMatrix * modelViewMatrix * pos;}",
+    sky_fragment: "uniform sampler2D texture;varying vec2 vUV;void main() {vec4 sample = texture2D(texture, vUV);gl_FragColor = vec4(sample.xyz, sample.w);}"
+};
+/* harmony export (immutable) */ __webpack_exports__["c"] = GLSL_MODULES;
+
+
 const WINDOW_OPTIONS = {
     gameWindowHeight: window.innerHeight,
     gameWindowWidth: window.innerWidth,
 };
-/* harmony export (immutable) */ __webpack_exports__["f"] = WINDOW_OPTIONS;
+/* harmony export (immutable) */ __webpack_exports__["g"] = WINDOW_OPTIONS;
 
 
 const GAMEFIELD_OPTIONS = {
@@ -87,7 +94,7 @@ const PLANET_OPTIONS = {
     radius: 30,
     segmentsQuantity: 90
 };
-/* harmony export (immutable) */ __webpack_exports__["c"] = PLANET_OPTIONS;
+/* harmony export (immutable) */ __webpack_exports__["d"] = PLANET_OPTIONS;
 
 
 const ASTEROID_OPTIONS = {
@@ -104,7 +111,7 @@ const SKYBOX_OPTIONS = {
     segmentsQuantity: 200,
     rotationSpeed: 0.0005
 };
-/* harmony export (immutable) */ __webpack_exports__["d"] = SKYBOX_OPTIONS;
+/* harmony export (immutable) */ __webpack_exports__["e"] = SKYBOX_OPTIONS;
 
 
 const SPACESHIP_OPTIONS = {
@@ -113,7 +120,7 @@ const SPACESHIP_OPTIONS = {
     flyWidthBorder: window.innerWidth*0.002,
     flyHeightBorder: window.innerHeight*0.002
 };
-/* harmony export (immutable) */ __webpack_exports__["e"] = SPACESHIP_OPTIONS;
+/* harmony export (immutable) */ __webpack_exports__["f"] = SPACESHIP_OPTIONS;
 
 
 
@@ -289,7 +296,7 @@ class Scene3D {
     }
 
     createCamera() {
-        this.camera = new THREE.PerspectiveCamera(60, __WEBPACK_IMPORTED_MODULE_0__Constants__["f" /* WINDOW_OPTIONS */].gameWindowWidth / __WEBPACK_IMPORTED_MODULE_0__Constants__["f" /* WINDOW_OPTIONS */].gameWindowHeight, 0.1, 1000);
+        this.camera = new THREE.PerspectiveCamera(60, __WEBPACK_IMPORTED_MODULE_0__Constants__["g" /* WINDOW_OPTIONS */].gameWindowWidth / __WEBPACK_IMPORTED_MODULE_0__Constants__["g" /* WINDOW_OPTIONS */].gameWindowHeight, 0.1, 1000);
         this.camera.position.z = 96;
         this.camera.position.y = 91;
         this.scene.add(this.camera);
@@ -341,20 +348,17 @@ class SkyBox extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default 
     }
 
     createMesh() {
-        const sky_vertex="varying vec2 vUV; void main() {vUV = uv;vec4 pos = vec4(position, 1.0);gl_Position = projectionMatrix * modelViewMatrix * pos;}";
-        const sky_fragment="uniform sampler2D texture;varying vec2 vUV;void main() {vec4 sample = texture2D(texture, vUV);gl_FragColor = vec4(sample.xyz, sample.w);}";
-
         const uniforms = {
             texture: { type: 't', value: THREE.ImageUtils.loadTexture("../src/images/hubble-min.jpg") }
         };
 
         const material = new THREE.ShaderMaterial( {
             uniforms:       uniforms,
-            vertexShader:  sky_vertex,
-            fragmentShader: sky_fragment
+            vertexShader:  __WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* GLSL_MODULES */].sky_vertex,
+            fragmentShader: __WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* GLSL_MODULES */].sky_fragment
         });
 
-        const geometry = new THREE.SphereGeometry(__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* SKYBOX_OPTIONS */].radius,__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* SKYBOX_OPTIONS */].segmentsQuantity,__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* SKYBOX_OPTIONS */].segmentsQuantity);
+        const geometry = new THREE.SphereGeometry(__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* SKYBOX_OPTIONS */].radius,__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* SKYBOX_OPTIONS */].segmentsQuantity,__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* SKYBOX_OPTIONS */].segmentsQuantity);
         this.mesh = new THREE.Mesh( geometry, material );
         this.mesh.scale.set(-1, 1, 1);
         //this.skyBox.eulerOrder = 'XZY';
@@ -364,7 +368,7 @@ class SkyBox extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default 
     setPosition() {}
 
     rotate() {
-        this.mesh.rotation.x+=__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* SKYBOX_OPTIONS */].rotationSpeed;
+        this.mesh.rotation.x+=__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* SKYBOX_OPTIONS */].rotationSpeed;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = SkyBox;
@@ -426,7 +430,7 @@ class Planet extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default 
 
     createMesh() {
         const texture = new THREE.TextureLoader().load( "../src/images/LL.jpg" );
-        const geometry = new THREE.SphereGeometry(__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* PLANET_OPTIONS */].radius,__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* PLANET_OPTIONS */].segmentsQuantity,__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* PLANET_OPTIONS */].segmentsQuantity);
+        const geometry = new THREE.SphereGeometry(__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* PLANET_OPTIONS */].radius,__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* PLANET_OPTIONS */].segmentsQuantity,__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* PLANET_OPTIONS */].segmentsQuantity);
         const material = new THREE.MeshStandardMaterial({map: texture});
         this.mesh = new THREE.Mesh( geometry, material );
     }
@@ -466,10 +470,10 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
     }
 
     setMouseMoveListener(event) {
-        let tx = -1 + (event.clientX / __WEBPACK_IMPORTED_MODULE_1__Constants__["f" /* WINDOW_OPTIONS */].gameWindowWidth)*2;
-        let ty = 1 - (event.clientY / __WEBPACK_IMPORTED_MODULE_1__Constants__["f" /* WINDOW_OPTIONS */].gameWindowHeight)*2;
+        let tx = -1 + (event.clientX / __WEBPACK_IMPORTED_MODULE_1__Constants__["g" /* WINDOW_OPTIONS */].gameWindowWidth)*2;
+        let ty = 1 - (event.clientY / __WEBPACK_IMPORTED_MODULE_1__Constants__["g" /* WINDOW_OPTIONS */].gameWindowHeight)*2;
 
-        this.mesh.position.x=this.normalizePosition(tx, -1, 1, -__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* SPACESHIP_OPTIONS */].flyWidthBorder, __WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* SPACESHIP_OPTIONS */].flyWidthBorder);
+        this.mesh.position.x=this.normalizePosition(tx, -1, 1, -__WEBPACK_IMPORTED_MODULE_1__Constants__["f" /* SPACESHIP_OPTIONS */].flyWidthBorder, __WEBPACK_IMPORTED_MODULE_1__Constants__["f" /* SPACESHIP_OPTIONS */].flyWidthBorder);
         this.mesh.position.y=this.normalizePosition(ty, -1, 1, -0.5, 1.5);//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
     }
 
