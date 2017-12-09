@@ -349,7 +349,7 @@ class SkyBox extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default 
 
     createMesh() {
         const uniforms = {
-            texture: { type: 't', value: THREE.ImageUtils.loadTexture("../src/images/hubble-min.jpg") }
+            texture: { type: 't', value: new THREE.TextureLoader().load("src/images/hubble-min.jpg")}
         };
 
         const material = new THREE.ShaderMaterial( {
@@ -429,7 +429,7 @@ class Planet extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default 
     }
 
     createMesh() {
-        const texture = new THREE.TextureLoader().load( "../src/images/LL.jpg" );
+        const texture = new THREE.TextureLoader().load( "src/images/LL.jpg" );
         const geometry = new THREE.SphereGeometry(__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* PLANET_OPTIONS */].radius,__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* PLANET_OPTIONS */].segmentsQuantity,__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* PLANET_OPTIONS */].segmentsQuantity);
         const material = new THREE.MeshStandardMaterial({map: texture});
         this.mesh = new THREE.Mesh( geometry, material );
@@ -458,7 +458,7 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
     createMesh() {
         this.mesh=new THREE.Object3D();
         this.plane = new THREE.ObjectLoader();
-        this.plane.load( '../src/JSON_Models/spaceship.json', ( obj ) => {
+        this.plane.load( 'src/JSON_Models/spaceship.json', ( obj ) => {
             this.mesh.add(obj);
         });
         this.setPosition();

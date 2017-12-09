@@ -10,7 +10,7 @@ export default class Spaceship extends ShapeCreator {
     createMesh() {
         this.mesh=new THREE.Object3D();
         this.plane = new THREE.ObjectLoader();
-        this.plane.load( '../src/JSON_Models/spaceship.json', ( obj ) => {
+        this.plane.load( 'src/JSON_Models/spaceship.json', ( obj ) => {
             this.mesh.add(obj);
         });
         this.setPosition();

@@ -9,7 +9,7 @@ export default class SkyBox extends ShapeCreator  {
 
     createMesh() {
         const uniforms = {
-            texture: { type: 't', value: THREE.ImageUtils.loadTexture("../src/images/hubble-min.jpg") }
+            texture: { type: 't', value: new THREE.TextureLoader().load("src/images/hubble-min.jpg")}
         };
 
         const material = new THREE.ShaderMaterial( {
