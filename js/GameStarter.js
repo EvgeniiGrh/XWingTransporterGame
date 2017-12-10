@@ -28,33 +28,34 @@ export default class GameStarter {
     }
 
     addAsteroids() {
-        this.asteroidsQuantity=Math.floor(5+Math.random()*8);
+        this.asteroidsQuantity=3;//Math.floor(10+Math.random()*8);
 
         this.asteroidsContainer=new THREE.Object3D();
 
         for(let i=0;i<this.asteroidsQuantity;i++){
-            this.asteroid = new Asteroid();
-            let xpos=-3.4+Math.random()*(6.8);
-            let ypos=31+Math.random()*(1.5);
-            let zpos=-5.5+Math.random()*(5.5);
-            let rotationSpeed=Math.random()/10;
-
-            this.asteroid.setPosition(xpos,ypos,zpos);
-            this.asteroid.setRotationSpeed(rotationSpeed);
+            console.log("In FOR");
+            this.asteroid = new Asteroid();//this.planeTexture);
+            this.asteroid.setPosition();//xpos,ypos,zpos
+            //this.asteroid.setRotationSpeed();//rotationSpeed
             this.asteroids.push(this.asteroid);
 
             this.asteroidsContainer.add(this.asteroid.mesh);
             //this.gameField.mesh.add(this.asteroid.mesh);
         }
 
-        this.gameField.mesh.add(this.asteroidsContainer);
+        this.asteroidsContainer.position.z=-100;
+        this.asteroidsContainer.position.y=-30;
+
+        this.scene3D.scene.add(this.asteroidsContainer);
+
+        //this.gameField.mesh.add(this.asteroidsContainer);
     }
 
     animateIntro() {
-        if (this.scene3D.camera.position.z > 6) {
+        if (this.scene3D.camera.position.z > 6) {//6
             this.scene3D.camera.position.z--;
         }
-        if (this.scene3D.camera.position.y > 1) {
+        if (this.scene3D.camera.position.y > 1) {//1
             this.scene3D.camera.position.y--;
         }
 
@@ -62,7 +63,7 @@ export default class GameStarter {
         if (this.spaceship.mesh.position.z > 3.6) {
             this.spaceship.mesh.position.z--;
         }
-        if (this.spaceship.mesh.position.y > 1) {
+        if (this.spaceship.mesh.position.y > 1) {//1
             this.spaceship.mesh.position.y--;
         }
 
@@ -70,9 +71,9 @@ export default class GameStarter {
         this.scene3D.controls.update();
         this.animationFrameId = requestAnimationFrame(()=>this.animateIntro());
 
-        if (this.scene3D.camera.position.y === 1 && this.scene3D.camera.position.z === 6) {
+        if (this.scene3D.camera.position.y === 1 && this.scene3D.camera.position.z === 6) {//1
             cancelAnimationFrame(this.animationFrameId);
-            document.addEventListener('mousemove', this.spaceship.setMouseMoveListener.bind(this.spaceship), false);
+            this.spaceship.listenSpaceshipMove();
             this.scene3D.createLights();
             this.addAsteroids();
             this.animateGameProcess();
@@ -82,9 +83,17 @@ export default class GameStarter {
     animateGameProcess() {
         this.gameField.rotate();
         this.skyBox.rotate();
-        this.asteroids.forEach(function (item) {
-            item.rotate();
-        });
+        if (this.asteroidsContainer.position.z>12) {
+
+            this.asteroidsContainer.position.z=-100;
+            this.asteroidsContainer.position.y=-30;
+
+            this.asteroids.forEach((item,i) => {
+                item.setPosition();
+                //item.setRotationSpeed();
+            })
+        } //this.addAsteroids();}
+        this.asteroidsContainer.position.z+=0.5;
         this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
         this.scene3D.controls.update();
         requestAnimationFrame(this.animateGameProcess.bind(this));

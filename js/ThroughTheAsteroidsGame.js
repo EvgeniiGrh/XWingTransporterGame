@@ -1,4 +1,5 @@
 import GameStarter from "./GameStarter";
+import {ASTEROID_OPTIONS} from "./Constants";
 
 
 class ThroughTheAsteroidsGame {

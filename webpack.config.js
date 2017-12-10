@@ -4,7 +4,7 @@ module.exports= {
         filename: 'Build.js',
     },
     watch: true,
-    devtool: "source-map",
+    devtool: 'source-map',
     devServer: {
         inline: true,
         port: 10000

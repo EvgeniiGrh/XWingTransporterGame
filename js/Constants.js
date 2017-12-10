@@ -1,4 +1,11 @@
 
+// export const OPTIONS = {
+//     GLSL_MODULES: {
+//         sky_vertex: "varying vec2 vUV; void main() {vUV = uv;vec4 pos = vec4(position, 1.0);gl_Position = projectionMatrix * modelViewMatrix * pos;}",
+//         sky_fragment: "uniform sampler2D texture;varying vec2 vUV;void main() {vec4 sample = texture2D(texture, vUV);gl_FragColor = vec4(sample.xyz, sample.w);}"
+//     }
+//
+// };
 
 export const GLSL_MODULES = {
     sky_vertex: "varying vec2 vUV; void main() {vUV = uv;vec4 pos = vec4(position, 1.0);gl_Position = projectionMatrix * modelViewMatrix * pos;}",
@@ -11,7 +18,7 @@ export const WINDOW_OPTIONS = {
 };
 
 export const GAMEFIELD_OPTIONS = {
-    rotationSpeed: 0.001
+    rotationSpeed: 0.01
 };
 
 export const PLANET_OPTIONS = {
@@ -21,6 +28,8 @@ export const PLANET_OPTIONS = {
 };
 
 export const ASTEROID_OPTIONS = {
+    object: [],
+    link: './src/JSON_Models/TIE_Fighter.json',
     rotationSpeed: 0.01,
     radius: 0.5,
     detail: 1,

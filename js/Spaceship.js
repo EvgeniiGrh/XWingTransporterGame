@@ -1,5 +1,5 @@
 import ShapeCreator from "./ShapeCreator";
-import {SPACESHIP_OPTIONS, WINDOW_OPTIONS} from "./Constants";
+import {ASTEROID_OPTIONS, SPACESHIP_OPTIONS, WINDOW_OPTIONS} from "./Constants";
 
 export default class Spaceship extends ShapeCreator {
 
@@ -21,6 +21,10 @@ export default class Spaceship extends ShapeCreator {
         this.mesh.position.y=88.3;
     }
 
+    listenSpaceshipMove() {
+        document.addEventListener('mousemove', this.setMouseMoveListener.bind(this));
+    }
+
     setMouseMoveListener(event) {
         let tx = -1 + (event.clientX / WINDOW_OPTIONS.gameWindowWidth)*2;
         let ty = 1 - (event.clientY / WINDOW_OPTIONS.gameWindowHeight)*2;
@@ -34,7 +38,6 @@ export default class Spaceship extends ShapeCreator {
         let dv = vmax-vmin;
         let pc = (nv-vmin)/dv;
         let dt = tmax-tmin;
-        let tv = tmin + (pc*dt);
-        return tv;
+        return tmin + (pc*dt);
     }
 }
