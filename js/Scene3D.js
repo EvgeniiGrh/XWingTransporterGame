@@ -1,4 +1,4 @@
-import {WINDOW_OPTIONS} from "./Constants";
+import {SCENE3D_OPTIONS} from "./Constants";
 
 export default class Scene3D {
     constructor() {
@@ -15,9 +15,14 @@ export default class Scene3D {
     }
 
     createCamera() {
-        this.camera = new THREE.PerspectiveCamera(60, WINDOW_OPTIONS.gameWindowWidth / WINDOW_OPTIONS.gameWindowHeight, 0.1, 1000);
-        this.camera.position.z = 96;
-        this.camera.position.y = 91;
+        this.camera = new THREE.PerspectiveCamera(
+            SCENE3D_OPTIONS.cameraOptions.verticalFieldOfView,
+            SCENE3D_OPTIONS.cameraOptions.aspectRatio,
+            SCENE3D_OPTIONS.cameraOptions.nearPlane,
+            SCENE3D_OPTIONS.cameraOptions.farPlane);
+
+        this.camera.position.y = SCENE3D_OPTIONS.cameraOptions.inIntroCoordinates.y;
+        this.camera.position.z = SCENE3D_OPTIONS.cameraOptions.inIntroCoordinates.z;
         this.scene.add(this.camera);
     }
 
@@ -28,8 +33,7 @@ export default class Scene3D {
 
     createRenderer() {
         this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
-        this.renderer.setPixelRatio(7);
-        this.renderer.setClearColor(0x5342f4, 1);
+        this.renderer.setPixelRatio(SCENE3D_OPTIONS.rendererOptions.pixelRatio);
     }
 
     createControls() {

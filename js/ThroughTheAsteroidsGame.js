@@ -1,6 +1,4 @@
-import GameStarter from "./GameStarter";
-import {ASTEROID_OPTIONS} from "./Constants";
-
+import GameProcess from "./GameProcess";
 
 class ThroughTheAsteroidsGame {
     constructor() {
@@ -9,7 +7,7 @@ class ThroughTheAsteroidsGame {
 
     setLoadListener() {
         window.addEventListener('load',() => {
-            (new GameStarter()).init();
+            (new GameProcess()).init();
         });
     }
 }

@@ -20,6 +20,10 @@ export default class GameField extends ShapeCreator {
         this.mesh.position.y=-30.5;
     }
 
+    movement() {
+        this.rotate();
+    }
+
     rotate() {
         this.mesh.rotation.x += GAMEFIELD_OPTIONS.rotationSpeed;
     }

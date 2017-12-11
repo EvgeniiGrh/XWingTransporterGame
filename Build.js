@@ -81,20 +81,20 @@ const GLSL_MODULES = {
     sky_vertex: "varying vec2 vUV; void main() {vUV = uv;vec4 pos = vec4(position, 1.0);gl_Position = projectionMatrix * modelViewMatrix * pos;}",
     sky_fragment: "uniform sampler2D texture;varying vec2 vUV;void main() {vec4 sample = texture2D(texture, vUV);gl_FragColor = vec4(sample.xyz, sample.w);}"
 };
-/* harmony export (immutable) */ __webpack_exports__["b"] = GLSL_MODULES;
+/* harmony export (immutable) */ __webpack_exports__["d"] = GLSL_MODULES;
 
 
 const WINDOW_OPTIONS = {
     gameWindowHeight: window.innerHeight,
     gameWindowWidth: window.innerWidth,
 };
-/* harmony export (immutable) */ __webpack_exports__["f"] = WINDOW_OPTIONS;
+/* harmony export (immutable) */ __webpack_exports__["i"] = WINDOW_OPTIONS;
 
 
 const GAMEFIELD_OPTIONS = {
     rotationSpeed: 0.01
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = GAMEFIELD_OPTIONS;
+/* harmony export (immutable) */ __webpack_exports__["c"] = GAMEFIELD_OPTIONS;
 
 
 const PLANET_OPTIONS = {
@@ -102,10 +102,10 @@ const PLANET_OPTIONS = {
     radius: 30,
     segmentsQuantity: 90
 };
-/* harmony export (immutable) */ __webpack_exports__["c"] = PLANET_OPTIONS;
+/* harmony export (immutable) */ __webpack_exports__["e"] = PLANET_OPTIONS;
 
 
-const ASTEROID_OPTIONS = {
+const ENEMY_OPTIONS = {
     object: [],
     link: './src/JSON_Models/TIE_Fighter.json',
     rotationSpeed: 0.01,
@@ -113,7 +113,7 @@ const ASTEROID_OPTIONS = {
     detail: 1,
     color: 0x5c3322
 };
-/* unused harmony export ASTEROID_OPTIONS */
+/* harmony export (immutable) */ __webpack_exports__["a"] = ENEMY_OPTIONS;
 
 
 const SKYBOX_OPTIONS = {
@@ -122,17 +122,66 @@ const SKYBOX_OPTIONS = {
     segmentsQuantity: 200,
     rotationSpeed: 0.0005
 };
-/* harmony export (immutable) */ __webpack_exports__["d"] = SKYBOX_OPTIONS;
+/* harmony export (immutable) */ __webpack_exports__["g"] = SKYBOX_OPTIONS;
 
 
 const SPACESHIP_OPTIONS = {
     link: './src/JSON_Models/spaceship.json',
-    dimensions: 0.5,
-    color: 0x000000,
-    flyWidthBorder: window.innerWidth*0.002,
-    flyHeightBorder: window.innerHeight*0.002
+    inIntroCoordinates: {
+        y: 88.3,
+        z: 92.6
+    },
+
+    inGameCoordinates: {
+        z: 3.6,
+        y: 1
+    },
+
+    flyWidthBorder: WINDOW_OPTIONS.gameWindowWidth*0.002,
+    flyHeightBorder: WINDOW_OPTIONS.gameWindowHeight*0.002,
+    turningSpeed: 0.02,
+    turningBackSpeed: 0.014,
+    alignmentPosition:0
 };
-/* harmony export (immutable) */ __webpack_exports__["e"] = SPACESHIP_OPTIONS;
+/* harmony export (immutable) */ __webpack_exports__["h"] = SPACESHIP_OPTIONS;
+
+
+const FIGHTERSCONTAINER_OPTIONS = {
+    flyStep: 0.5,
+    distanceCoordinates: {
+        y: -30,
+        z: -120
+    },
+    maxZCoordinate: 11
+};
+/* harmony export (immutable) */ __webpack_exports__["b"] = FIGHTERSCONTAINER_OPTIONS;
+
+
+const SCENE3D_OPTIONS = {
+    cameraOptions: {
+        inIntroCoordinates: {
+            y: 91,
+            z: 96
+        },
+
+        inGameCoordinates: {
+            z: 6,
+            y: 1
+        },
+
+        verticalFieldOfView: 60,
+        aspectRatio: WINDOW_OPTIONS.gameWindowWidth / WINDOW_OPTIONS.gameWindowHeight,
+        nearPlane: 0.1,
+        farPlane: 1000
+    },
+
+    rendererOptions: {
+        pixelRatio: 7
+    }
+
+};
+/* harmony export (immutable) */ __webpack_exports__["f"] = SCENE3D_OPTIONS;
+
 
 
 
@@ -160,10 +209,7 @@ class ShapeCreator {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameStarter__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Constants__ = __webpack_require__(0);
-
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameProcess__ = __webpack_require__(11);
 
 
 class ThroughTheAsteroidsGame {
@@ -173,7 +219,7 @@ class ThroughTheAsteroidsGame {
 
     setLoadListener() {
         window.addEventListener('load',() => {
-            (new __WEBPACK_IMPORTED_MODULE_0__GameStarter__["a" /* default */]()).init();
+            (new __WEBPACK_IMPORTED_MODULE_0__GameProcess__["a" /* default */]()).init();
         });
     }
 }
@@ -182,121 +228,7 @@ new ThroughTheAsteroidsGame();
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Scene3D__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__SkyBox__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__GameField__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Spaceship__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Asteroid__ = __webpack_require__(9);
-
-
-
-
-
-
-class GameStarter {
-    constructor() {
-        this.asteroids=[];
-    };
-
-    init() {
-        this.scene3D = new __WEBPACK_IMPORTED_MODULE_0__Scene3D__["a" /* default */]();
-
-        let axis = new THREE.AxisHelper(500);//add temporary Axises
-        this.scene3D.scene.add(axis);
-
-        this.skyBox = new __WEBPACK_IMPORTED_MODULE_1__SkyBox__["a" /* default */]();
-        this.scene3D.scene.add(this.skyBox.mesh);
-
-        this.gameField = new __WEBPACK_IMPORTED_MODULE_2__GameField__["a" /* default */]();
-        this.scene3D.scene.add(this.gameField.mesh);
-
-        this.spaceship = new __WEBPACK_IMPORTED_MODULE_3__Spaceship__["a" /* default */]();
-        this.scene3D.scene.add(this.spaceship.mesh);
-
-        this.animateIntro();
-    }
-
-    addAsteroids() {
-        this.asteroidsQuantity=3;//Math.floor(10+Math.random()*8);
-
-        this.asteroidsContainer=new THREE.Object3D();
-
-        for(let i=0;i<this.asteroidsQuantity;i++){
-            console.log("In FOR");
-            this.asteroid = new __WEBPACK_IMPORTED_MODULE_4__Asteroid__["a" /* default */]();//this.planeTexture);
-            this.asteroid.setPosition();//xpos,ypos,zpos
-            //this.asteroid.setRotationSpeed();//rotationSpeed
-            this.asteroids.push(this.asteroid);
-
-            this.asteroidsContainer.add(this.asteroid.mesh);
-            //this.gameField.mesh.add(this.asteroid.mesh);
-        }
-
-        this.asteroidsContainer.position.z=-100;
-        this.asteroidsContainer.position.y=-30;
-
-        this.scene3D.scene.add(this.asteroidsContainer);
-
-        //this.gameField.mesh.add(this.asteroidsContainer);
-    }
-
-    animateIntro() {
-        if (this.scene3D.camera.position.z > 6) {//6
-            this.scene3D.camera.position.z--;
-        }
-        if (this.scene3D.camera.position.y > 1) {//1
-            this.scene3D.camera.position.y--;
-        }
-
-        //DEBUG IT
-        if (this.spaceship.mesh.position.z > 3.6) {
-            this.spaceship.mesh.position.z--;
-        }
-        if (this.spaceship.mesh.position.y > 1) {//1
-            this.spaceship.mesh.position.y--;
-        }
-
-        this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
-        this.scene3D.controls.update();
-        this.animationFrameId = requestAnimationFrame(()=>this.animateIntro());
-
-        if (this.scene3D.camera.position.y === 1 && this.scene3D.camera.position.z === 6) {//1
-            cancelAnimationFrame(this.animationFrameId);
-            this.spaceship.listenSpaceshipMove();
-            this.scene3D.createLights();
-            this.addAsteroids();
-            this.animateGameProcess();
-        }
-    }
-
-    animateGameProcess() {
-        this.gameField.rotate();
-        this.skyBox.rotate();
-        if (this.asteroidsContainer.position.z>12) {
-
-            this.asteroidsContainer.position.z=-100;
-            this.asteroidsContainer.position.y=-30;
-
-            this.asteroids.forEach((item,i) => {
-                item.setPosition();
-                //item.setRotationSpeed();
-            })
-        } //this.addAsteroids();}
-        this.asteroidsContainer.position.z+=0.5;
-        this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
-        this.scene3D.controls.update();
-        requestAnimationFrame(this.animateGameProcess.bind(this));
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = GameStarter;
-
-
-
-/***/ }),
+/* 3 */,
 /* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -319,9 +251,14 @@ class Scene3D {
     }
 
     createCamera() {
-        this.camera = new THREE.PerspectiveCamera(60, __WEBPACK_IMPORTED_MODULE_0__Constants__["f" /* WINDOW_OPTIONS */].gameWindowWidth / __WEBPACK_IMPORTED_MODULE_0__Constants__["f" /* WINDOW_OPTIONS */].gameWindowHeight, 0.1, 1000);
-        this.camera.position.z = 96;
-        this.camera.position.y = 91;
+        this.camera = new THREE.PerspectiveCamera(
+            __WEBPACK_IMPORTED_MODULE_0__Constants__["f" /* SCENE3D_OPTIONS */].cameraOptions.verticalFieldOfView,
+            __WEBPACK_IMPORTED_MODULE_0__Constants__["f" /* SCENE3D_OPTIONS */].cameraOptions.aspectRatio,
+            __WEBPACK_IMPORTED_MODULE_0__Constants__["f" /* SCENE3D_OPTIONS */].cameraOptions.nearPlane,
+            __WEBPACK_IMPORTED_MODULE_0__Constants__["f" /* SCENE3D_OPTIONS */].cameraOptions.farPlane);
+
+        this.camera.position.y = __WEBPACK_IMPORTED_MODULE_0__Constants__["f" /* SCENE3D_OPTIONS */].cameraOptions.inIntroCoordinates.y;
+        this.camera.position.z = __WEBPACK_IMPORTED_MODULE_0__Constants__["f" /* SCENE3D_OPTIONS */].cameraOptions.inIntroCoordinates.z;
         this.scene.add(this.camera);
     }
 
@@ -332,8 +269,7 @@ class Scene3D {
 
     createRenderer() {
         this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
-        this.renderer.setPixelRatio(7);
-        this.renderer.setClearColor(0x5342f4, 1);
+        this.renderer.setPixelRatio(__WEBPACK_IMPORTED_MODULE_0__Constants__["f" /* SCENE3D_OPTIONS */].rendererOptions.pixelRatio);
     }
 
     createControls() {
@@ -372,26 +308,28 @@ class SkyBox extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default 
 
     createMesh() {
         const uniforms = {
-            texture: { type: 't', value: new THREE.TextureLoader().load(__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* SKYBOX_OPTIONS */].link)}
+            texture: { type: 't', value: new THREE.TextureLoader().load(__WEBPACK_IMPORTED_MODULE_1__Constants__["g" /* SKYBOX_OPTIONS */].link)}
         };
 
         const material = new THREE.ShaderMaterial( {
             uniforms:       uniforms,
-            vertexShader:  __WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* GLSL_MODULES */].sky_vertex,
-            fragmentShader: __WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* GLSL_MODULES */].sky_fragment
+            vertexShader:  __WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* GLSL_MODULES */].sky_vertex,
+            fragmentShader: __WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* GLSL_MODULES */].sky_fragment
         });
 
-        const geometry = new THREE.SphereGeometry(__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* SKYBOX_OPTIONS */].radius,__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* SKYBOX_OPTIONS */].segmentsQuantity,__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* SKYBOX_OPTIONS */].segmentsQuantity);
+        const geometry = new THREE.SphereGeometry(__WEBPACK_IMPORTED_MODULE_1__Constants__["g" /* SKYBOX_OPTIONS */].radius,__WEBPACK_IMPORTED_MODULE_1__Constants__["g" /* SKYBOX_OPTIONS */].segmentsQuantity,__WEBPACK_IMPORTED_MODULE_1__Constants__["g" /* SKYBOX_OPTIONS */].segmentsQuantity);
         this.mesh = new THREE.Mesh( geometry, material );
         this.mesh.scale.set(-1, 1, 1);
         //this.skyBox.eulerOrder = 'XZY';
         //this.skyBox.renderDepth = 1000.0;
     }
 
-    setPosition() {}
+    movement() {
+        this.rotate();
+    }
 
     rotate() {
-        this.mesh.rotation.x+=__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* SKYBOX_OPTIONS */].rotationSpeed;
+        this.mesh.rotation.x+=__WEBPACK_IMPORTED_MODULE_1__Constants__["g" /* SKYBOX_OPTIONS */].rotationSpeed;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = SkyBox;
@@ -428,8 +366,12 @@ class GameField extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
         this.mesh.position.y=-30.5;
     }
 
+    movement() {
+        this.rotate();
+    }
+
     rotate() {
-        this.mesh.rotation.x += __WEBPACK_IMPORTED_MODULE_2__Constants__["a" /* GAMEFIELD_OPTIONS */].rotationSpeed;
+        this.mesh.rotation.x += __WEBPACK_IMPORTED_MODULE_2__Constants__["c" /* GAMEFIELD_OPTIONS */].rotationSpeed;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = GameField;
@@ -452,8 +394,8 @@ class Planet extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default 
     }
 
     createMesh() {
-        const texture = new THREE.TextureLoader().load( __WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* PLANET_OPTIONS */].link );
-        const geometry = new THREE.SphereGeometry(__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* PLANET_OPTIONS */].radius,__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* PLANET_OPTIONS */].segmentsQuantity,__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* PLANET_OPTIONS */].segmentsQuantity);
+        const texture = new THREE.TextureLoader().load( __WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* PLANET_OPTIONS */].link );
+        const geometry = new THREE.SphereGeometry(__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* PLANET_OPTIONS */].radius,__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* PLANET_OPTIONS */].segmentsQuantity,__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* PLANET_OPTIONS */].segmentsQuantity);
         const material = new THREE.MeshStandardMaterial({map: texture});
         this.mesh = new THREE.Mesh( geometry, material );
     }
@@ -476,20 +418,21 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
 
     constructor() {
         super();
+        this.lastTurnCoordinateX=0;
     }
 
     createMesh() {
-        this.mesh=new THREE.Object3D();
+        this.mesh = new THREE.Object3D();
         this.plane = new THREE.ObjectLoader();
-        this.plane.load( __WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* SPACESHIP_OPTIONS */].link, ( obj ) => {
+        this.plane.load( __WEBPACK_IMPORTED_MODULE_1__Constants__["h" /* SPACESHIP_OPTIONS */].link, ( obj ) => {
             this.mesh.add(obj);
         });
         this.setPosition();
     }
 
     setPosition() {
-        this.mesh.position.z = 92.6;
-        this.mesh.position.y=88.3;
+        this.mesh.position.z = __WEBPACK_IMPORTED_MODULE_1__Constants__["h" /* SPACESHIP_OPTIONS */].inIntroCoordinates.z;
+        this.mesh.position.y = __WEBPACK_IMPORTED_MODULE_1__Constants__["h" /* SPACESHIP_OPTIONS */].inIntroCoordinates.y;
     }
 
     listenSpaceshipMove() {
@@ -497,11 +440,35 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
     }
 
     setMouseMoveListener(event) {
-        let tx = -1 + (event.clientX / __WEBPACK_IMPORTED_MODULE_1__Constants__["f" /* WINDOW_OPTIONS */].gameWindowWidth)*2;
-        let ty = 1 - (event.clientY / __WEBPACK_IMPORTED_MODULE_1__Constants__["f" /* WINDOW_OPTIONS */].gameWindowHeight)*2;
+        let tx = -1 + (event.clientX / __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* WINDOW_OPTIONS */].gameWindowWidth)*2;
+        let ty = 1 - (event.clientY / __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* WINDOW_OPTIONS */].gameWindowHeight)*2;
 
-        this.mesh.position.x=this.normalizePosition(tx, -1, 1, -__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* SPACESHIP_OPTIONS */].flyWidthBorder, __WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* SPACESHIP_OPTIONS */].flyWidthBorder);
-        this.mesh.position.y=this.normalizePosition(ty, -1, 1, -0.5, 1.5);//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
+        const currentX = this.normalizePosition(tx, -1, 1, -__WEBPACK_IMPORTED_MODULE_1__Constants__["h" /* SPACESHIP_OPTIONS */].flyWidthBorder, __WEBPACK_IMPORTED_MODULE_1__Constants__["h" /* SPACESHIP_OPTIONS */].flyWidthBorder);
+        const currentY = this.normalizePosition(ty, -1, 1, -0.5, 1.5);//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
+
+        this.mesh.position.x = currentX;
+        this.mesh.position.y = currentY;
+
+        this.turning(currentX);
+    }
+
+    turning(currentX) {
+        if (currentX>this.lastTurnCoordinateX) {
+            this.mesh.rotation.z += __WEBPACK_IMPORTED_MODULE_1__Constants__["h" /* SPACESHIP_OPTIONS */].turningSpeed;
+        }
+        else {
+            this.mesh.rotation.z -= __WEBPACK_IMPORTED_MODULE_1__Constants__["h" /* SPACESHIP_OPTIONS */].turningSpeed;
+        }
+        this.lastTurnCoordinateX = currentX;
+    }
+
+    alignSpaceship() {
+        if (this.mesh.rotation.z > __WEBPACK_IMPORTED_MODULE_1__Constants__["h" /* SPACESHIP_OPTIONS */].alignmentPosition) {
+            this.mesh.rotation.z -= __WEBPACK_IMPORTED_MODULE_1__Constants__["h" /* SPACESHIP_OPTIONS */].turningBackSpeed;
+        }
+        else {
+            this.mesh.rotation.z += __WEBPACK_IMPORTED_MODULE_1__Constants__["h" /* SPACESHIP_OPTIONS */].turningBackSpeed;
+        }
     }
 
     normalizePosition(v,vmin,vmax,tmin,tmax) {
@@ -517,7 +484,143 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
 
 
 /***/ }),
-/* 9 */
+/* 9 */,
+/* 10 */,
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Scene3D__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__SkyBox__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__GameField__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Spaceship__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Enemy__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__EnemiesContainer__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Constants__ = __webpack_require__(0);
+
+
+
+
+
+
+
+
+class GameProcess {
+    constructor() {
+        this.movingObjects=[];
+        this.enemiesArray=[];
+        this.lastSpaceshipPosition=0;
+    };
+
+    init() {
+        this.scene3D = new __WEBPACK_IMPORTED_MODULE_0__Scene3D__["a" /* default */]();
+
+        // let axis = new THREE.AxisHelper(500);//add temporary Axises
+        // this.scene3D.scene.add(axis);
+
+        this.skyBox = new __WEBPACK_IMPORTED_MODULE_1__SkyBox__["a" /* default */]();
+        this.scene3D.scene.add(this.skyBox.mesh);
+        this.movingObjects.push(this.skyBox);
+
+        this.gameField = new __WEBPACK_IMPORTED_MODULE_2__GameField__["a" /* default */]();
+        this.scene3D.scene.add(this.gameField.mesh);
+        this.movingObjects.push(this.gameField);
+
+        this.spaceship = new __WEBPACK_IMPORTED_MODULE_3__Spaceship__["a" /* default */]();
+        this.scene3D.scene.add(this.spaceship.mesh);
+
+        this.animateIntro();
+    }
+
+    animateIntro() {
+        this.introMovement();
+        this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
+        this.scene3D.controls.update();
+        this.animationFrameId = requestAnimationFrame(()=>this.animateIntro());
+
+        if (this.isIntroEnd()) {
+            this.startGame();
+        }
+    }
+
+    introMovement() {
+        if (this.scene3D.camera.position.z > __WEBPACK_IMPORTED_MODULE_6__Constants__["f" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.z) {
+            this.scene3D.camera.position.z--;
+        }
+        if (this.scene3D.camera.position.y > __WEBPACK_IMPORTED_MODULE_6__Constants__["f" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.y) {
+            this.scene3D.camera.position.y--;
+        }
+
+        //DEBUG IT
+        if (this.spaceship.mesh.position.z > __WEBPACK_IMPORTED_MODULE_6__Constants__["h" /* SPACESHIP_OPTIONS */].inGameCoordinates.z) {
+            this.spaceship.mesh.position.z--;
+        }
+        if (this.spaceship.mesh.position.y > __WEBPACK_IMPORTED_MODULE_6__Constants__["h" /* SPACESHIP_OPTIONS */].inGameCoordinates.y) {
+            this.spaceship.mesh.position.y--;
+        }
+    }
+
+    isIntroEnd() {
+        if (this.scene3D.camera.position.y === __WEBPACK_IMPORTED_MODULE_6__Constants__["f" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.y &&
+            this.scene3D.camera.position.z === __WEBPACK_IMPORTED_MODULE_6__Constants__["f" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.z) {
+            return true;
+        }
+    }
+
+    startGame() {
+        cancelAnimationFrame(this.animationFrameId);
+        this.spaceship.listenSpaceshipMove();
+        this.addEnemies();
+        this.animateGameProcess();
+    }
+
+    addEnemies() {
+        const enemiesQuantity=5;//Math.floor(10+Math.random()*8);
+
+        this.fightersContainer= new __WEBPACK_IMPORTED_MODULE_5__EnemiesContainer__["a" /* default */]();
+        this.fightersContainer.setPrimaryPosition();
+        this.movingObjects.push(this.fightersContainer);
+
+        for(let i=0;i<enemiesQuantity;i++) {
+            this.enemy = new __WEBPACK_IMPORTED_MODULE_4__Enemy__["a" /* default */]();
+            this.enemy.setRandomPosition();
+            this.enemiesArray.push(this.enemy);
+            this.fightersContainer.mesh.add(this.enemy.mesh);
+        }
+
+        this.scene3D.scene.add(this.fightersContainer.mesh);
+    }
+
+
+    animateGameProcess() {
+        this.movingObjects.forEach((item)=>{
+            item.movement();
+        });
+
+        //if(this.gameField.mesh.rotation.x>2*Math.PI) {GAMEFIELD_OPTIONS.rotationSpeed+=0.001;}
+        if (this.fightersContainer.isBehindCamera()) {
+            this.fightersContainer.setPrimaryPosition();
+            this.enemiesArray.forEach((item) => {
+                item.setRandomPosition();
+            })
+        }
+
+        this.lastSpaceshipPosition=this.spaceship.mesh.position.x;
+        if (this.lastSpaceshipPosition===this.spaceship.lastTurnCoordinateX || this.spaceship.mesh.rotation.z!==0) {
+            this.spaceship.alignSpaceship();
+        }
+
+        this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
+        this.scene3D.controls.update();
+        requestAnimationFrame(this.animateGameProcess.bind(this));
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = GameProcess;
+
+
+
+/***/ }),
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -526,7 +629,7 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
 
 
 
-class Asteroid extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default */] {
+class Enemy extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default */] {
 
     constructor() {
         super();
@@ -536,44 +639,74 @@ class Asteroid extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defaul
         this.mesh=new THREE.Object3D();
 
         const plane=new THREE.ObjectLoader();
-        plane.load( './src/JSON_Models/TIE_Fighter.json', ( obj ) => {
-            //for(let i=0;i<5;i++) {
-                //ASTEROID_OPTIONS.object[i]=obj;
-            //}
-            //console.log(ASTEROID_OPTIONS.object);
+        plane.load( __WEBPACK_IMPORTED_MODULE_1__Constants__["a" /* ENEMY_OPTIONS */].link, ( obj ) => {
             this.mesh.add(obj);
         });
-
-        //this.mesh.add(ASTEROID_OPTIONS.object.pop());
-
-        /*const sphereGeometry = new THREE.DodecahedronGeometry( ASTEROID_OPTIONS.radius, ASTEROID_OPTIONS.detail);
-        const sphereMaterial = new THREE.MeshStandardMaterial( { color: ASTEROID_OPTIONS.color ,shading: THREE.FlatShading} );
-        this.mesh = new THREE.Mesh( sphereGeometry, sphereMaterial );*/
     }
 
-    setPosition() {//x,y,z
-        let xpos=-20+Math.random()*(30);//-3.4+Math.random()*(6.8);
-        let ypos=30+Math.random()*(4);//31+Math.random()*(1.5);
-        let zpos=-5.5+Math.random()*(10.5);//-5.5+Math.random()*(5.5);
+    setRandomPosition() {
+        let xpos = -10+Math.random()*(20);//-3.4+Math.random()*(6.8);
+        let ypos = 30+Math.random()*(2.5);//31+Math.random()*(1.5);
+        let zpos = -5.5+Math.random()*(10.5);//-5.5+Math.random()*(5.5);
 
-        this.mesh.position.x=xpos;//2
-        this.mesh.position.y=ypos;//31
-        this.mesh.position.z=zpos;//2
+        this.mesh.position.x = xpos;//2
+        this.mesh.position.y = ypos;//31
+        this.mesh.position.z = zpos;//2
     }
 
     setRotationSpeed() {//rotationSpeed
-        this.rotationSpeed=Math.random()/10;
+        this.rotationSpeed = Math.random()/10;
     }
 
     rotate() {
-        this.mesh.rotation.z+=this.rotationSpeed;//ASTEROID_OPTIONS.rotationSpeed;
+        this.mesh.rotation.z += this.rotationSpeed;//ASTEROID_OPTIONS.rotationSpeed;
     }
 
     step(z) {
-        this.mesh.position.z+=z;//2
+        this.mesh.position.z += z;//2
     }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = Asteroid;
+/* harmony export (immutable) */ __webpack_exports__["a"] = Enemy;
+
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Constants__ = __webpack_require__(0);
+
+
+
+class EnemiesContainer extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default */]{
+    constructor() {
+        super();
+    }
+
+    createMesh() {
+        this.mesh=new THREE.Object3D();
+    }
+
+    setPrimaryPosition() {
+        this.mesh.position.z=__WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* FIGHTERSCONTAINER_OPTIONS */].distanceCoordinates.z;
+        this.mesh.position.y=__WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* FIGHTERSCONTAINER_OPTIONS */].distanceCoordinates.y;
+    }
+
+    isBehindCamera() {
+        return this.mesh.position.z>__WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* FIGHTERSCONTAINER_OPTIONS */].maxZCoordinate;
+    }
+
+    movement() {
+        this.flyStep();
+    }
+
+    flyStep() {
+        this.mesh.position.z+=__WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* FIGHTERSCONTAINER_OPTIONS */].flyStep;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = EnemiesContainer;
 
 
 

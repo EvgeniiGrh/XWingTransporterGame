@@ -27,7 +27,7 @@ export const PLANET_OPTIONS = {
     segmentsQuantity: 90
 };
 
-export const ASTEROID_OPTIONS = {
+export const ENEMY_OPTIONS = {
     object: [],
     link: './src/JSON_Models/TIE_Fighter.json',
     rotationSpeed: 0.01,
@@ -45,8 +45,53 @@ export const SKYBOX_OPTIONS = {
 
 export const SPACESHIP_OPTIONS = {
     link: './src/JSON_Models/spaceship.json',
-    dimensions: 0.5,
-    color: 0x000000,
-    flyWidthBorder: window.innerWidth*0.002,
-    flyHeightBorder: window.innerHeight*0.002
+    inIntroCoordinates: {
+        y: 88.3,
+        z: 92.6
+    },
+
+    inGameCoordinates: {
+        z: 3.6,
+        y: 1
+    },
+
+    flyWidthBorder: WINDOW_OPTIONS.gameWindowWidth*0.002,
+    flyHeightBorder: WINDOW_OPTIONS.gameWindowHeight*0.002,
+    turningSpeed: 0.02,
+    turningBackSpeed: 0.014,
+    alignmentPosition:0
 };
+
+export const FIGHTERSCONTAINER_OPTIONS = {
+    flyStep: 0.5,
+    distanceCoordinates: {
+        y: -30,
+        z: -120
+    },
+    maxZCoordinate: 11
+};
+
+export const SCENE3D_OPTIONS = {
+    cameraOptions: {
+        inIntroCoordinates: {
+            y: 91,
+            z: 96
+        },
+
+        inGameCoordinates: {
+            z: 6,
+            y: 1
+        },
+
+        verticalFieldOfView: 60,
+        aspectRatio: WINDOW_OPTIONS.gameWindowWidth / WINDOW_OPTIONS.gameWindowHeight,
+        nearPlane: 0.1,
+        farPlane: 1000
+    },
+
+    rendererOptions: {
+        pixelRatio: 7
+    }
+
+};
+

@@ -25,7 +25,9 @@ export default class SkyBox extends ShapeCreator  {
         //this.skyBox.renderDepth = 1000.0;
     }
 
-    setPosition() {}
+    movement() {
+        this.rotate();
+    }
 
     rotate() {
         this.mesh.rotation.x+=SKYBOX_OPTIONS.rotationSpeed;
