@@ -1,5 +1,4 @@
 import ShapeCreator from "./ShapeCreator";
-import Planet from "./Planet";
 import {GAMEFIELD_OPTIONS} from "./Constants";
 
 
@@ -10,21 +9,30 @@ export default class GameField extends ShapeCreator {
     }
 
     createMesh() {
-        this.mesh=new THREE.Object3D();
-        this.planet=new Planet();
-        this.mesh.add(this.planet.mesh);
+        const texture = new THREE.TextureLoader().load( GAMEFIELD_OPTIONS.link );
+        const geometry = new THREE.SphereGeometry(GAMEFIELD_OPTIONS.radius,GAMEFIELD_OPTIONS.segmentsQuantity,GAMEFIELD_OPTIONS.segmentsQuantity);
+        const material = new THREE.MeshStandardMaterial({map: texture});
+        // material.transparent=true;
+        // material.opacity=0;
+        this.mesh = new THREE.Mesh( geometry, material );
         this.setPosition();
     }
 
     setPosition() {
         this.mesh.position.y=-30.5;
+        this.mesh.rotation.z=Math.PI/2;
     }
 
     movement() {
-        this.rotate();
+        this.mesh.rotation.x += GAMEFIELD_OPTIONS.rotationSpeed;
     }
 
-    rotate() {
-        this.mesh.rotation.x += GAMEFIELD_OPTIONS.rotationSpeed;
+    increaseMovementSpeed() {
+        this.mesh.rotation.x=0;
+        GAMEFIELD_OPTIONS.rotationSpeed+=GAMEFIELD_OPTIONS.increaseStep;
+    }
+
+    isWholeCircle() {
+        return this.mesh.rotation.x>GAMEFIELD_OPTIONS.wholeCircle;
     }
 }

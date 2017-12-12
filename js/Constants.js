@@ -18,13 +18,12 @@ export const WINDOW_OPTIONS = {
 };
 
 export const GAMEFIELD_OPTIONS = {
-    rotationSpeed: 0.01
-};
-
-export const PLANET_OPTIONS = {
     link: './src/images/LL.jpg',
     radius: 30,
-    segmentsQuantity: 90
+    segmentsQuantity: 90,
+    rotationSpeed: 0.006,
+    increaseStep: 0.003,
+    wholeCircle: 2*Math.PI
 };
 
 export const ENEMY_OPTIONS = {
@@ -40,7 +39,8 @@ export const SKYBOX_OPTIONS = {
     link: './src/images/hubble-min.jpg',
     radius: 600,
     segmentsQuantity: 200,
-    rotationSpeed: 0.0005
+    rotationSpeed: 0.0006,
+    increaseStep: 0//0.0002
 };
 
 export const SPACESHIP_OPTIONS = {
@@ -63,12 +63,13 @@ export const SPACESHIP_OPTIONS = {
 };
 
 export const FIGHTERSCONTAINER_OPTIONS = {
-    flyStep: 0.5,
+    flySpeed: 0.5,
+    increaseStep: 0.04,
     distanceCoordinates: {
         y: -30,
         z: -120
     },
-    maxZCoordinate: 11
+    maxZCoordinate: 13
 };
 
 export const SCENE3D_OPTIONS = {

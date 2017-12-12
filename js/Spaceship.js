@@ -49,6 +49,11 @@ export default class Spaceship extends ShapeCreator {
         this.lastTurnCoordinateX = currentX;
     }
 
+    isSpaceshipNotMove(lastSpaceshipPosition) {
+        return (lastSpaceshipPosition===this.lastTurnCoordinateX) ||
+            (this.mesh.rotation.z!==0);
+    }
+
     alignSpaceship() {
         if (this.mesh.rotation.z > SPACESHIP_OPTIONS.alignmentPosition) {
             this.mesh.rotation.z -= SPACESHIP_OPTIONS.turningBackSpeed;

@@ -20,10 +20,10 @@ export default class EnemiesContainer extends ShapeCreator{
     }
 
     movement() {
-        this.flyStep();
+        this.mesh.position.z+=FIGHTERSCONTAINER_OPTIONS.flySpeed;
     }
 
-    flyStep() {
-        this.mesh.position.z+=FIGHTERSCONTAINER_OPTIONS.flyStep;
+    increaseMovementSpeed() {
+        FIGHTERSCONTAINER_OPTIONS.flySpeed+=FIGHTERSCONTAINER_OPTIONS.increaseStep;
     }
 }
