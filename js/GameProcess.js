@@ -72,12 +72,12 @@ export default class GameProcess {
         cancelAnimationFrame(this.animationFrameId);
         this.spaceship.listenSpaceshipMove();
         this.addEnemies();
-        this.scene3D.createLights();
+        this.enemyPosition = new THREE.Vector3();
         this.animateGameProcess();
     }
 
     addEnemies() {
-        const enemiesQuantity=Math.floor(10+Math.random()*10);
+        const enemiesQuantity=Math.floor(15+Math.random()*10);
 
         this.fightersContainer= new EnemiesContainer();
         this.fightersContainer.setPrimaryPosition();
@@ -87,7 +87,7 @@ export default class GameProcess {
             this.enemy = new Enemy();
             this.enemy.setRandomPosition();
 
-            if (i!==0) {
+            if (i!==0) {//so the coordinates of each enemy don't match other enemies
                 while (this.enemiesArray.some(
                     (item) => {
                         return (item.mesh.position.x===this.enemy.mesh.position.x ||
@@ -146,15 +146,41 @@ export default class GameProcess {
     }
 
     checkCollision() {
-        const enemyPosition = new THREE.Vector3();
-
         this.enemiesArray.forEach(( enemy ) => {
-            enemyPosition.setFromMatrixPosition( enemy.mesh.matrixWorld );
-            if(enemyPosition.distanceTo(this.spaceship.mesh.position)<=0.5){
-                console.log("FINISH");
-                this.scene3D.scene.remove(this.spaceship.mesh);
-                cancelAnimationFrame(this.animationFrameId );
-            }
+            this.enemyPosition.setFromMatrixPosition( enemy.mesh.matrixWorld );
+                if (this.enemyPosition.manhattanDistanceTo(this.spaceship.mesh.position)<=0.95) {
+                    this.finishGame();
+                }
         });
+    }
+
+    finishGame() {
+        cancelAnimationFrame(this.animationFrameId );
+        console.log("FINISH");
+        this.scene3D.createCommonLight();
+        this.scene3D.createLights();
+        this.scene3D.scene.remove(this.spaceship.mesh);
+
+        this.addFireBall();
+        this.animateGameFinish();
+    }
+
+    addFireBall() {
+        let sphereGeometry = new THREE.DodecahedronGeometry( 2.7, 1);
+        let sphereMaterial = new THREE.MeshStandardMaterial( { color: 0xd33404 ,shading: THREE.FlatShading} );
+        this.fireBall = new THREE.Mesh( sphereGeometry, sphereMaterial );
+
+        this.fireBall.position.x=this.spaceship.mesh.position.x;
+        this.fireBall.position.y=this.spaceship.mesh.position.y;
+        this.fireBall.position.z=this.spaceship.mesh.position.z-2;
+
+        this.scene3D.scene.add(this.fireBall);
+    }
+
+    animateGameFinish() {
+        this.fireBall.rotation.y+=1;
+        this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
+        this.scene3D.controls.update();
+        this.animationFrameId=requestAnimationFrame(this.animateGameFinish.bind(this));
     }
 }

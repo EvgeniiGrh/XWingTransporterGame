@@ -31,7 +31,7 @@ export default class Spaceship extends ShapeCreator {
         let ty = 1 - (event.clientY / WINDOW_OPTIONS.gameWindowHeight)*2;
 
         const currentX = this.normalizePosition(tx, -1, 1, -SPACESHIP_OPTIONS.flyWidthBorder, SPACESHIP_OPTIONS.flyWidthBorder);
-        const currentY = this.normalizePosition(ty, -1, 1, -0.5, 1.5);//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
+        const currentY = this.normalizePosition(ty, -1, 1, -0.62, 1.8);//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
 
         this.mesh.position.x = currentX;
         this.mesh.position.y = currentY;

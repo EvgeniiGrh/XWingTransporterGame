@@ -18,9 +18,10 @@ export const WINDOW_OPTIONS = {
 };
 
 export const GAMEFIELD_OPTIONS = {
-    link: './src/images/LL.jpg',
+    link: './src/images/DS.jpg',
     radius: 30,
     segmentsQuantity: 90,
+    angleOfSlope: Math.PI/3,
     rotationSpeed: 0.006,
     increaseStep: 0.003,
     wholeCircle: 2*Math.PI
@@ -39,6 +40,7 @@ export const SKYBOX_OPTIONS = {
     link: './src/images/hubble-min.jpg',
     radius: 600,
     segmentsQuantity: 200,
+    angleOfSlope: Math.PI/3,
     rotationSpeed: 0.0006,
     increaseStep: 0//0.0002
 };
@@ -69,7 +71,7 @@ export const FIGHTERSCONTAINER_OPTIONS = {
         y: -30,
         z: -120
     },
-    maxZCoordinate: 13
+    maxZCoordinate: 14
 };
 
 export const SCENE3D_OPTIONS = {

@@ -21,7 +21,7 @@ export default class SkyBox extends ShapeCreator  {
         const geometry = new THREE.SphereGeometry(SKYBOX_OPTIONS.radius,SKYBOX_OPTIONS.segmentsQuantity,SKYBOX_OPTIONS.segmentsQuantity);
         this.mesh = new THREE.Mesh( geometry, material );
         this.mesh.scale.set(-1, 1, 1);
-        this.mesh.rotation.z=Math.PI/2;
+        this.mesh.rotation.z=SKYBOX_OPTIONS.angleOfSlope;
         //this.skyBox.eulerOrder = 'XZY';
         //this.skyBox.renderDepth = 1000.0;
     }

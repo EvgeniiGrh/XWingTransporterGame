@@ -92,9 +92,10 @@ const WINDOW_OPTIONS = {
 
 
 const GAMEFIELD_OPTIONS = {
-    link: './src/images/LL.jpg',
+    link: './src/images/DS.jpg',
     radius: 30,
     segmentsQuantity: 90,
+    angleOfSlope: Math.PI/3,
     rotationSpeed: 0.006,
     increaseStep: 0.003,
     wholeCircle: 2*Math.PI
@@ -117,6 +118,7 @@ const SKYBOX_OPTIONS = {
     link: './src/images/hubble-min.jpg',
     radius: 600,
     segmentsQuantity: 200,
+    angleOfSlope: Math.PI/3,
     rotationSpeed: 0.0006,
     increaseStep: 0//0.0002
 };
@@ -151,7 +153,7 @@ const FIGHTERSCONTAINER_OPTIONS = {
         y: -30,
         z: -120
     },
-    maxZCoordinate: 13
+    maxZCoordinate: 14
 };
 /* harmony export (immutable) */ __webpack_exports__["b"] = FIGHTERSCONTAINER_OPTIONS;
 
@@ -213,13 +215,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 class XWingTransporterGame {
     constructor() {
-        this.setLoadListener();
+        this.menu=document.querySelector("#menu");
+        this.menuScreen = document.querySelector("#menu-screen");
+        this.playButton=document.querySelector("#play");
+        this.setPlayListener();
     }
 
-    setLoadListener() {
-        window.addEventListener('load',() => {
+    setPlayListener() {
+        this.playButton.addEventListener("click", function(){
+            this.menu.classList = "hide";
+
+            let percent = 0;
+            let loading = document.createElement("div");
+            loading.classList = "loading";
+            this.menuScreen.appendChild(loading);
+
             (new __WEBPACK_IMPORTED_MODULE_0__GameProcess__["a" /* default */]()).init();
-        });
+
+            let id = setInterval(() => {
+                if(percent === 105) {
+                    this.menuScreen.classList = "hide";
+                    document.body.classList.add("hide-cursor");
+                    clearInterval(id);
+                }
+                loading.innerText = `${percent}`+"%";
+                percent += 5;
+            }, 500);
+
+        }.bind(this));
     }
 }
 
@@ -312,12 +335,12 @@ class GameProcess {
         cancelAnimationFrame(this.animationFrameId);
         this.spaceship.listenSpaceshipMove();
         this.addEnemies();
-        this.scene3D.createLights();
+        this.enemyPosition = new THREE.Vector3();
         this.animateGameProcess();
     }
 
     addEnemies() {
-        const enemiesQuantity=Math.floor(10+Math.random()*10);
+        const enemiesQuantity=Math.floor(15+Math.random()*10);
 
         this.fightersContainer= new __WEBPACK_IMPORTED_MODULE_5__EnemiesContainer__["a" /* default */]();
         this.fightersContainer.setPrimaryPosition();
@@ -327,7 +350,7 @@ class GameProcess {
             this.enemy = new __WEBPACK_IMPORTED_MODULE_4__Enemy__["a" /* default */]();
             this.enemy.setRandomPosition();
 
-            if (i!==0) {
+            if (i!==0) {//so the coordinates of each enemy don't match other enemies
                 while (this.enemiesArray.some(
                     (item) => {
                         return (item.mesh.position.x===this.enemy.mesh.position.x ||
@@ -386,16 +409,42 @@ class GameProcess {
     }
 
     checkCollision() {
-        const enemyPosition = new THREE.Vector3();
-
         this.enemiesArray.forEach(( enemy ) => {
-            enemyPosition.setFromMatrixPosition( enemy.mesh.matrixWorld );
-            if(enemyPosition.distanceTo(this.spaceship.mesh.position)<=0.5){
-                console.log("FINISH");
-                this.scene3D.scene.remove(this.spaceship.mesh);
-                cancelAnimationFrame(this.animationFrameId );
-            }
+            this.enemyPosition.setFromMatrixPosition( enemy.mesh.matrixWorld );
+                if (this.enemyPosition.manhattanDistanceTo(this.spaceship.mesh.position)<=0.95) {
+                    this.finishGame();
+                }
         });
+    }
+
+    finishGame() {
+        cancelAnimationFrame(this.animationFrameId );
+        console.log("FINISH");
+        this.scene3D.createCommonLight();
+        this.scene3D.createLights();
+        this.scene3D.scene.remove(this.spaceship.mesh);
+
+        this.addFireBall();
+        this.animateGameFinish();
+    }
+
+    addFireBall() {
+        let sphereGeometry = new THREE.DodecahedronGeometry( 2.7, 1);
+        let sphereMaterial = new THREE.MeshStandardMaterial( { color: 0xd33404 ,shading: THREE.FlatShading} );
+        this.fireBall = new THREE.Mesh( sphereGeometry, sphereMaterial );
+
+        this.fireBall.position.x=this.spaceship.mesh.position.x;
+        this.fireBall.position.y=this.spaceship.mesh.position.y;
+        this.fireBall.position.z=this.spaceship.mesh.position.z-2;
+
+        this.scene3D.scene.add(this.fireBall);
+    }
+
+    animateGameFinish() {
+        this.fireBall.rotation.y+=1;
+        this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
+        this.scene3D.controls.update();
+        this.animationFrameId=requestAnimationFrame(this.animateGameFinish.bind(this));
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = GameProcess;
@@ -420,7 +469,7 @@ class Scene3D {
         this.scene = new THREE.Scene();
         this.createCamera();
         this.createRenderer();
-        this.createCommonLight();
+        //this.createCommonLight();
         this.createControls();
     }
 
@@ -494,7 +543,7 @@ class SkyBox extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default 
         const geometry = new THREE.SphereGeometry(__WEBPACK_IMPORTED_MODULE_1__Constants__["f" /* SKYBOX_OPTIONS */].radius,__WEBPACK_IMPORTED_MODULE_1__Constants__["f" /* SKYBOX_OPTIONS */].segmentsQuantity,__WEBPACK_IMPORTED_MODULE_1__Constants__["f" /* SKYBOX_OPTIONS */].segmentsQuantity);
         this.mesh = new THREE.Mesh( geometry, material );
         this.mesh.scale.set(-1, 1, 1);
-        this.mesh.rotation.z=Math.PI/2;
+        this.mesh.rotation.z=__WEBPACK_IMPORTED_MODULE_1__Constants__["f" /* SKYBOX_OPTIONS */].angleOfSlope;
         //this.skyBox.eulerOrder = 'XZY';
         //this.skyBox.renderDepth = 1000.0;
     }
@@ -540,7 +589,7 @@ class GameField extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
 
     setPosition() {
         this.mesh.position.y=-30.5;
-        this.mesh.rotation.z=Math.PI/2;
+        this.mesh.rotation.z=__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* GAMEFIELD_OPTIONS */].angleOfSlope;
     }
 
     movement() {
@@ -600,7 +649,7 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
         let ty = 1 - (event.clientY / __WEBPACK_IMPORTED_MODULE_1__Constants__["h" /* WINDOW_OPTIONS */].gameWindowHeight)*2;
 
         const currentX = this.normalizePosition(tx, -1, 1, -__WEBPACK_IMPORTED_MODULE_1__Constants__["g" /* SPACESHIP_OPTIONS */].flyWidthBorder, __WEBPACK_IMPORTED_MODULE_1__Constants__["g" /* SPACESHIP_OPTIONS */].flyWidthBorder);
-        const currentY = this.normalizePosition(ty, -1, 1, -0.5, 1.5);//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
+        const currentY = this.normalizePosition(ty, -1, 1, -0.62, 1.8);//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
 
         this.mesh.position.x = currentX;
         this.mesh.position.y = currentY;
@@ -671,24 +720,12 @@ class Enemy extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default *
 
     setRandomPosition() {
         let xpos = -13+Math.random()*(26);//-3.4+Math.random()*(6.8);
-        let ypos = 30+Math.random()*(3);//31+Math.random()*(1.5);
+        let ypos = 30+Math.random()*(1.8);//31+Math.random()*(1.5);
         let zpos = -10.5+Math.random()*(21);//-5.5+Math.random()*(5.5);
 
         this.mesh.position.x = xpos;//2
         this.mesh.position.y = ypos;//31
         this.mesh.position.z = zpos;//2
-    }
-
-    setRotationSpeed() {//rotationSpeed
-        this.rotationSpeed = Math.random()/10;
-    }
-
-    rotate() {
-        this.mesh.rotation.z += this.rotationSpeed;//ASTEROID_OPTIONS.rotationSpeed;
-    }
-
-    step(z) {
-        this.mesh.position.z += z;//2
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Enemy;

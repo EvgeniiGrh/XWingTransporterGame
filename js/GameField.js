@@ -20,7 +20,7 @@ export default class GameField extends ShapeCreator {
 
     setPosition() {
         this.mesh.position.y=-30.5;
-        this.mesh.rotation.z=Math.PI/2;
+        this.mesh.rotation.z=GAMEFIELD_OPTIONS.angleOfSlope;
     }
 
     movement() {
