@@ -30,6 +30,7 @@ export default class GameProcess {
         this.spaceship = new Spaceship();
         this.scene3D.scene.add(this.spaceship.mesh);
 
+        //this.animateIntro();
         //this.addEnemies();
 
     }
@@ -72,7 +73,7 @@ export default class GameProcess {
     startGame() {
         cancelAnimationFrame(this.animationFrameId);
         this.spaceship.listenSpaceshipMove();
-//
+        //this.addEnemies();
         this.enemyPosition = new THREE.Vector3();
         this.animateGameProcess();
     }

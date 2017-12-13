@@ -1,3 +1,3 @@
 setTimeout( () => {
-    window.open("../index.html");
-}, 5000);
+    document.location.href="../index.html";
+}, 60000);

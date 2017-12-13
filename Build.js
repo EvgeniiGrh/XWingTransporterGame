@@ -296,6 +296,7 @@ class GameProcess {
         this.spaceship = new __WEBPACK_IMPORTED_MODULE_3__Spaceship__["a" /* default */]();
         this.scene3D.scene.add(this.spaceship.mesh);
 
+        //this.animateIntro();
         //this.addEnemies();
 
     }
@@ -338,7 +339,7 @@ class GameProcess {
     startGame() {
         cancelAnimationFrame(this.animationFrameId);
         this.spaceship.listenSpaceshipMove();
-//
+        //this.addEnemies();
         this.enemyPosition = new THREE.Vector3();
         this.animateGameProcess();
     }
