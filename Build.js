@@ -222,27 +222,30 @@ class XWingTransporterGame {
     }
 
     setPlayListener() {
-        this.playButton.addEventListener("click", function(){
-            this.menu.classList = "hide";
+        this.playButton.addEventListener("click", () => {
+            this.menu.classList.add("hide");
 
-            let percent = 0;
-            let loading = document.createElement("div");
+            let percent = 3;
+            const loading = document.createElement("div");
             loading.classList = "loading";
             this.menuScreen.appendChild(loading);
 
-            (new __WEBPACK_IMPORTED_MODULE_0__GameProcess__["a" /* default */]()).init();
+            const game=new __WEBPACK_IMPORTED_MODULE_0__GameProcess__["a" /* default */]();
+            game.init();
 
             let id = setInterval(() => {
-                if(percent === 105) {
-                    this.menuScreen.classList = "hide";
+                if(percent === 103) {
+                    this.menuScreen.classList.add("hide");
                     document.body.classList.add("hide-cursor");
+                    game.animateIntro();
                     clearInterval(id);
                 }
                 loading.innerText = `${percent}`+"%";
                 percent += 5;
             }, 500);
-
-        }.bind(this));
+            loading.innerText = `${percent}`+"%";
+            game.addEnemies();
+        });
     }
 }
 
@@ -293,7 +296,8 @@ class GameProcess {
         this.spaceship = new __WEBPACK_IMPORTED_MODULE_3__Spaceship__["a" /* default */]();
         this.scene3D.scene.add(this.spaceship.mesh);
 
-        this.animateIntro();
+        //this.addEnemies();
+
     }
 
     animateIntro() {
@@ -334,7 +338,7 @@ class GameProcess {
     startGame() {
         cancelAnimationFrame(this.animationFrameId);
         this.spaceship.listenSpaceshipMove();
-        this.addEnemies();
+//
         this.enemyPosition = new THREE.Vector3();
         this.animateGameProcess();
     }

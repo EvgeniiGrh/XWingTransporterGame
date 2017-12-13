@@ -9,27 +9,30 @@ class XWingTransporterGame {
     }
 
     setPlayListener() {
-        this.playButton.addEventListener("click", function(){
-            this.menu.classList = "hide";
+        this.playButton.addEventListener("click", () => {
+            this.menu.classList.add("hide");
 
-            let percent = 0;
-            let loading = document.createElement("div");
+            let percent = 3;
+            const loading = document.createElement("div");
             loading.classList = "loading";
             this.menuScreen.appendChild(loading);
 
-            (new GameProcess()).init();
+            const game=new GameProcess();
+            game.init();
 
             let id = setInterval(() => {
-                if(percent === 105) {
-                    this.menuScreen.classList = "hide";
+                if(percent === 103) {
+                    this.menuScreen.classList.add("hide");
                     document.body.classList.add("hide-cursor");
+                    game.animateIntro();
                     clearInterval(id);
                 }
                 loading.innerText = `${percent}`+"%";
                 percent += 5;
             }, 500);
-
-        }.bind(this));
+            loading.innerText = `${percent}`+"%";
+            game.addEnemies();
+        });
     }
 }
 
