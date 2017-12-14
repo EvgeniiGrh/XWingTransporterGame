@@ -333,3 +333,9 @@ a:hover{
     flex-direction: column;
     justify-content: space-between;
 }
+
+.dev-header{
+    font-family: MeroendaOne;
+    font-size: 40px;
+    font-weight: bold;
+}
