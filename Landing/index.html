@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="style/reset.css">
     <link rel="stylesheet" href="style/style.css">
     <link rel="shortcut icon" href="../src/images/logo.png" type="image/png">
+    <script src="js/js.js"></script>
     <title>About X-Wing Transporter</title>
 </head>
 <body>
@@ -19,11 +20,11 @@
                     </div>
                     <nav class="nav">
                         <ul class="ul-container">
-                            <li><a href="#">technology</a></li>
-                            <li><a href="#">controls</a></li>
-                            <li><a href="#">screenshots</a></li>
-                            <li><a href="#">play</a></li>
-                            <li><a href="#">developers</a></li>
+                            <li><a onclick="initScroll('first'); return false;" href="#">technology</a></li>
+                            <li><a onclick="initScroll('second'); return false;" href="#">controls</a></li>
+                            <li><a onclick="initScroll('third'); return false;" href="#">screenshots</a></li>
+                            <li><a onclick="initScroll('fourth'); return false;" href="#">play</a></li>
+                            <li><a onclick="initScroll('fifth'); return false;" href="#">developers</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -52,7 +53,7 @@
         <section class="point">
             <div class="inner-container">
                 <div class="point-container">
-                    <h2 class="section-title">TECHNOLOGY</h2>
+                    <h2 id="first" class="section-title">TECHNOLOGY</h2>
                     <p>This game is built using: JavaScript and WebGl</p>
                     <div class="container-tech-img">
                         <img src="img/Logo-js.png" class="js-log" alt="">
@@ -66,7 +67,7 @@
         <section class="point other-color">
             <div class="inner-container">
                 <div class="point-container">
-                    <h2 class="section-title">CONTROLS</h2>
+                    <h2 id="second" class="section-title">CONTROLS</h2>
                     <p>Control of game is pretty simple</p>
                     <img class="mouse-container" src="img/Mouse.gif" alt="">
                 </div>
@@ -75,7 +76,7 @@
         <section class="point">
             <div class="inner-container">
                 <div class="point-container">
-                    <h2 class="section-title">SCREENSHOTS</h2>
+                    <h2 id="third" class="section-title">SCREENSHOTS</h2>
                     <div class="screen-container">
                         <img class="screen-img" src="img/screen.jpg" alt="">
                         <img class="screen-img" src="img/screen.jpg" alt="">
@@ -88,7 +89,7 @@
         <section class="point other-color">
             <div class="inner-container">
                 <div class="sec-play">
-                    <h2 class="section-title">PLAY</h2>
+                    <h2 id="fourth" class="section-title">PLAY</h2>
                     <p>Maybe you are the new hope!</p>
                     <div class="play-container">
                         <a class="play-button" href="">PLAY</a>
@@ -102,30 +103,29 @@
         <section class="developers-block-container">
             <div class="inner-container">
                 <div class="developers-block">
-                    <h2 class="dev-header">Developers</h2>
+                    <h2 id="fifth" class="dev-header">Developers</h2>
                     <div class="developer">
                         <div class="first-developer">
-
-                                <div class="info">
-                                    <h4>Goroh Evgeniy</h4>
-                                    <p class="paragraph-developers">Future developer</p>
-                                    <a class="dev-link" href="https://github.com/EvgeniiGrh">GITHUB <div class="sprites-container"></div></a>
-                                    <a class="dev-link" href="https://vk.com/id115123613">VK <div class="sprites-container sprite2"></div></a>
-                                </div>
-                                <div>
-                                    <img class="developer-image" src="img/Pilot1.png" alt="">
-                                </div>
+                            <div class="info">
+                                <h4>Goroh Evgeniy</h4>
+                                <p class="paragraph-developers">Future developer</p>
+                                <a class="dev-link" href="https://github.com/EvgeniiGrh">GITHUB <div class="sprites-container"></div></a>
+                                <a class="dev-link" href="https://vk.com/id115123613">VK <div class="sprites-container sprite2"></div></a>
+                            </div>
+                            <div>
+                                <img class="developer-image" src="img/Pilot1.png" alt="">
+                            </div>
                             </div>
                         <div class="second-developer">
-                                <div class="info">
-                                    <h4>Goncharik Ilya</h4>
-                                    <p class="paragraph-developers">Future developer</p>
-                                    <a class="dev-link" href="https://github.com/AmsterGet">GITHUB <div class="sprites-container"></div></a>
-                                    <a class="dev-link" href="https://vk.com/amsterget">VK<div class="sprites-container sprite2"></div></a>
-                                </div>
-                                <div>
-                                    <img class="developer-image" src="img/Pilot2.png" alt="">
-                                </div>
+                            <div class="info">
+                                <h4>Goncharik Ilya</h4>
+                                <p class="paragraph-developers">Future developer</p>
+                                <a class="dev-link" href="https://github.com/AmsterGet">GITHUB <div class="sprites-container"></div></a>
+                                <a class="dev-link" href="https://vk.com/amsterget">VK<div class="sprites-container sprite2"></div></a>
+                            </div>
+                            <div>
+                                <img class="developer-image" src="img/Pilot2.png" alt="">
+                            </div>
                             </div>
                     </div>
 
