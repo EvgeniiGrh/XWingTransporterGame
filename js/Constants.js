@@ -53,8 +53,8 @@ export const SPACESHIP_OPTIONS = {
     },
 
     inGameCoordinates: {
-        z: 3.6,
-        y: 1
+        z: 3.6,//3.6
+        y: 1.2//1
     },
 
     flyWidthBorder: WINDOW_OPTIONS.gameWindowWidth*0.002,
@@ -71,7 +71,8 @@ export const FIGHTERSCONTAINER_OPTIONS = {
         y: -30,
         z: -120
     },
-    maxZCoordinate: 14
+    maxZCoordinate: 14,
+    coordinateZToPlaySound: -14
 };
 
 export const SCENE3D_OPTIONS = {
@@ -82,8 +83,8 @@ export const SCENE3D_OPTIONS = {
         },
 
         inGameCoordinates: {
-            z: 6,
-            y: 1
+            z: 7,//6
+            y: 1//1
         },
 
         verticalFieldOfView: 60,
@@ -98,3 +99,8 @@ export const SCENE3D_OPTIONS = {
 
 };
 
+export const AUDIO_OPTIONS = {
+    mainAudioLink: './sounds/MainSound.mp3',
+    fightersFlyAudioLink: './sounds/FightersFly.mp3',
+    failAudioLink: './sounds/R2D2.mp3',
+};

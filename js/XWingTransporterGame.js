@@ -10,29 +10,34 @@ class XWingTransporterGame {
 
     setPlayListener() {
         this.playButton.addEventListener("click", () => {
-            this.menu.classList.add("hide");
-
-            let percent = 3;
-            const loading = document.createElement("div");
-            loading.classList = "loading";
-            this.menuScreen.appendChild(loading);
-
-            const game=new GameProcess();
-            game.init();
-
-            let id = setInterval(() => {
-                if(percent === 103) {
-                    this.menuScreen.classList.add("hide");
-                    document.body.classList.add("hide-cursor");
-                    game.animateIntro();
-                    clearInterval(id);
-                }
-                loading.innerText = `${percent}`+"%";
-                percent += 5;
-            }, 500);
-            loading.innerText = `${percent}`+"%";
-            game.addEnemies();
+            this.addLoadingPanel();
+            this.startLoading();
         });
+    }
+
+    addLoadingPanel() {
+        this.menu.classList.add("hide");
+        this.loading = document.createElement("div");
+        this.loading.classList = "loading";
+        this.menuScreen.appendChild(this.loading);
+    }
+
+    startLoading() {
+        let percent = 3;
+        const game=new GameProcess();
+        game.init();
+
+        let id = setInterval(() => {
+            if(percent === 103) {
+                this.menuScreen.classList.add("hide");
+                document.body.classList.add("hide-cursor");
+                game.startIntro();
+                clearInterval(id);
+            }
+            this.loading.innerText = `${percent}`+"%";
+            percent += 5;
+        }, 250);
+        this.loading.innerText = `${percent}`+"%";
     }
 }
 

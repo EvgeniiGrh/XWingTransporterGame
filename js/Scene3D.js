@@ -1,4 +1,5 @@
 import {SCENE3D_OPTIONS} from "./Constants";
+import Audio from "./Audio";
 
 export default class Scene3D {
     constructor() {
@@ -10,8 +11,14 @@ export default class Scene3D {
         this.scene = new THREE.Scene();
         this.createCamera();
         this.createRenderer();
-        //this.createCommonLight();
+        this.createCommonLight();
+        this.createAudio();
         this.createControls();
+    }
+
+    createAudio() {
+        this.audio=new Audio();
+        this.camera.add(this.audio.listener);
     }
 
     createCamera() {

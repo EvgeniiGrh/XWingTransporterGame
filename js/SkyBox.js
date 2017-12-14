@@ -5,6 +5,7 @@ export default class SkyBox extends ShapeCreator  {
 
     constructor() {
         super();
+        this.rotationSpeed=SKYBOX_OPTIONS.rotationSpeed;
     }
 
     createMesh() {
@@ -27,10 +28,10 @@ export default class SkyBox extends ShapeCreator  {
     }
 
     movement() {
-        this.mesh.rotation.x+=SKYBOX_OPTIONS.rotationSpeed;
+        this.mesh.rotation.x+=this.rotationSpeed;
     }
 
     increaseMovementSpeed() {
-        SKYBOX_OPTIONS.rotationSpeed+=SKYBOX_OPTIONS.increaseStep;
+        this.rotationSpeed+=SKYBOX_OPTIONS.increaseStep;
     }
 }

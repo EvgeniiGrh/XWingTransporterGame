@@ -4,7 +4,7 @@ import GameField from "./GameField";
 import Spaceship from "./Spaceship";
 import Enemy from "./Enemy";
 import EnemiesContainer from "./EnemiesContainer";
-import {SCENE3D_OPTIONS, SPACESHIP_OPTIONS} from "./Constants";
+import {SCENE3D_OPTIONS, SPACESHIP_OPTIONS, ENEMY_OPTIONS} from "./Constants";
 
 export default class GameProcess {
     constructor() {
@@ -30,9 +30,13 @@ export default class GameProcess {
         this.spaceship = new Spaceship();
         this.scene3D.scene.add(this.spaceship.mesh);
 
-        //this.animateIntro();
-        //this.addEnemies();
+        this.addEnemies();
 
+    }
+
+    startIntro() {
+        this.animateIntro();
+        this.scene3D.audio.playMainSound();
     }
 
     animateIntro() {
@@ -72,40 +76,46 @@ export default class GameProcess {
 
     startGame() {
         cancelAnimationFrame(this.animationFrameId);
+        this.scene3D.scene.add(this.fightersContainer.mesh);
         this.spaceship.listenSpaceshipMove();
-        //this.addEnemies();
         this.enemyPosition = new THREE.Vector3();
         this.animateGameProcess();
     }
 
     addEnemies() {
-        const enemiesQuantity=Math.floor(15+Math.random()*10);
+        const enemiesQuantity=Math.floor(30+Math.random()*10);
 
         this.fightersContainer= new EnemiesContainer();
         this.fightersContainer.setPrimaryPosition();
         this.movingObjects.push(this.fightersContainer);
 
-        for(let i=0;i<enemiesQuantity;i++) {
-            this.enemy = new Enemy();
-            this.enemy.setRandomPosition();
+        this.plane=new THREE.ObjectLoader();
+        this.plane.load( ENEMY_OPTIONS.link, ( obj ) => {
 
-            if (i!==0) {//so the coordinates of each enemy don't match other enemies
-                while (this.enemiesArray.some(
-                    (item) => {
-                        return (item.mesh.position.x===this.enemy.mesh.position.x ||
-                            item.mesh.position.y===this.enemy.mesh.position.y ||
-                            item.mesh.position.z===this.enemy.mesh.position.z);
+            for(let i=0;i<enemiesQuantity+1;i++) {
+                let copy=obj.clone();
+
+                let enemy = new Enemy();
+                enemy.mesh.add(copy);
+                enemy.setRandomPosition();
+
+                if (i!==0) {//so the coordinates of each enemy don't match other enemies
+                    while (this.enemiesArray.some(
+                        (item) => {
+                            return (item.mesh.position.x===enemy.mesh.position.x ||
+                                item.mesh.position.y===enemy.mesh.position.y ||
+                                item.mesh.position.z===enemy.mesh.position.z);
+                        }
+                    )) {
+                        enemy.setRandomPosition();
                     }
-                )) {
-                    this.enemy.setRandomPosition();
                 }
+
+                this.enemiesArray.push(enemy);
+                this.fightersContainer.mesh.add(enemy.mesh);
             }
 
-            this.enemiesArray.push(this.enemy);
-            this.fightersContainer.mesh.add(this.enemy.mesh);
-        }
-
-        this.scene3D.scene.add(this.fightersContainer.mesh);
+        });
     }
 
     animateGameProcess() {
@@ -132,6 +142,10 @@ export default class GameProcess {
     }
 
     checkFightersPosition() {
+        if (this.fightersContainer.isNearTheSpaceship()) {
+            this.scene3D.audio.playFightersFly();
+        }
+
         if (this.fightersContainer.isBehindCamera()) {
             this.fightersContainer.setPrimaryPosition();
             this.enemiesArray.forEach((item) => {
@@ -158,13 +172,14 @@ export default class GameProcess {
 
     finishGame() {
         cancelAnimationFrame(this.animationFrameId );
-        console.log("FINISH");
+
         this.scene3D.createCommonLight();
         this.scene3D.createLights();
         this.scene3D.scene.remove(this.spaceship.mesh);
 
         this.addFireBall();
         this.animateGameFinish();
+        this.scene3D.audio.playFailSound();
     }
 
     addFireBall() {

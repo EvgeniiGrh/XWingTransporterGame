@@ -4,6 +4,7 @@ import {FIGHTERSCONTAINER_OPTIONS} from "./Constants";
 export default class EnemiesContainer extends ShapeCreator{
     constructor() {
         super();
+        this.flySpeed=FIGHTERSCONTAINER_OPTIONS.flySpeed;
     }
 
     createMesh() {
@@ -19,11 +20,15 @@ export default class EnemiesContainer extends ShapeCreator{
         return this.mesh.position.z>FIGHTERSCONTAINER_OPTIONS.maxZCoordinate;
     }
 
+    isNearTheSpaceship() {
+        return this.mesh.position.z>FIGHTERSCONTAINER_OPTIONS.coordinateZToPlaySound;
+    }
+
     movement() {
-        this.mesh.position.z+=FIGHTERSCONTAINER_OPTIONS.flySpeed;
+        this.mesh.position.z+=this.flySpeed;
     }
 
     increaseMovementSpeed() {
-        FIGHTERSCONTAINER_OPTIONS.flySpeed+=FIGHTERSCONTAINER_OPTIONS.increaseStep;
+        this.flySpeed+=FIGHTERSCONTAINER_OPTIONS.increaseStep;
     }
 }

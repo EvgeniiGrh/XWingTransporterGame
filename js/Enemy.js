@@ -9,17 +9,18 @@ export default class Enemy extends ShapeCreator {
 
     createMesh() {
         this.mesh=new THREE.Object3D();
+        //this.mesh.add(temp);
+        // const plane=new THREE.ObjectLoader();
+        // plane.load( ENEMY_OPTIONS.link, ( obj ) => {
+        //     this.mesh.add(obj);
+        // });
 
-        const plane=new THREE.ObjectLoader();
-        plane.load( ENEMY_OPTIONS.link, ( obj ) => {
-            this.mesh.add(obj);
-        });
     }
 
     setRandomPosition() {
         let xpos = -13+Math.random()*(26);//-3.4+Math.random()*(6.8);
-        let ypos = 30+Math.random()*(1.8);//31+Math.random()*(1.5);
-        let zpos = -10.5+Math.random()*(21);//-5.5+Math.random()*(5.5);
+        let ypos = 29.5+Math.random()*(6);//31+Math.random()*(1.5);
+        let zpos = -10.5+Math.random()*(20);//-5.5+Math.random()*(5.5);
 
         this.mesh.position.x = xpos;//2
         this.mesh.position.y = ypos;//31

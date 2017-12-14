@@ -6,6 +6,7 @@ export default class GameField extends ShapeCreator {
 
     constructor() {
         super();
+        this.rotationSpeed=GAMEFIELD_OPTIONS.rotationSpeed;
     }
 
     createMesh() {
@@ -19,17 +20,17 @@ export default class GameField extends ShapeCreator {
     }
 
     setPosition() {
-        this.mesh.position.y=-30.5;
+        this.mesh.position.y=-31;//-30.5
         this.mesh.rotation.z=GAMEFIELD_OPTIONS.angleOfSlope;
     }
 
     movement() {
-        this.mesh.rotation.x += GAMEFIELD_OPTIONS.rotationSpeed;
+        this.mesh.rotation.x += this.rotationSpeed;
     }
 
     increaseMovementSpeed() {
         this.mesh.rotation.x=0;
-        GAMEFIELD_OPTIONS.rotationSpeed+=GAMEFIELD_OPTIONS.increaseStep;
+        this.rotationSpeed+=GAMEFIELD_OPTIONS.increaseStep;
     }
 
     isWholeCircle() {
