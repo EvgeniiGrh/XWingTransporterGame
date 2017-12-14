@@ -4,8 +4,19 @@
 }
 
 @font-face {
+    font-family: "Dancing";
+    src: url("../fonts/DancingScript-Regular.woff ") format('woff');
+}
+
+
+@font-face {
     font-family: "MeroendaOne";
     src: url("../fonts/MeriendaOne-Regular.woff") format('woff');
+}
+
+@font-face {
+    font-family: "Baloo";
+    src: url("../fonts/BalooTammudu-Regular.woff") format('woff');
 }
 
 .wrapper{
@@ -87,10 +98,12 @@ a:hover{
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-around;
 }
 
 .first-part-title{
     font-size: 50px;
+    line-height: 0.5;
 }
 
 .second-part-title{
@@ -102,15 +115,31 @@ a:hover{
     font-size: 20px;
 }
 
+.first-part-author{
+    width: 50px;
+}
+
+.author{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.quote{
+    width: 660px;
+}
+
 .slider-text{
     margin-top: 130px;
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(0,0,0,0.6);
     border-radius: 5%;
     padding: 10px;
-    height: 160px;
+    height: 220px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    font-family: Baloo;
+    word-spacing: 5px;
 }
 
 .point{
@@ -136,6 +165,7 @@ a:hover{
     justify-content: space-around;
     align-items: center;
     width: 100%;
+    flex-wrap: wrap;
 }
 .other-color{
     background: #eaeaea;
@@ -154,6 +184,158 @@ a:hover{
     margin: 20px 0;
 }
 
+.screen-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
 .screen-img{
+    width: 460px;
+}
+
+.sec-play{
+    height: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.play-button{
+    background-color: black;
+    color: white;
+    border: 6px solid #eaeaea;
+    border-radius: 5%;
+    font-size: 30px;
+    padding: 20px 40px;
+}
+
+.play-button:hover{
+    border: 6px solid #609af2;
+    color: white;
+}
+
+.play-container{
+    margin-top: 70px;
+    margin-bottom: 30px;
+}
+
+.under-button{
+    font-style: italic;
+}
+
+.developers-block{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.developers-block-container{
+    background: url("../img/developers-background.png") no-repeat;
+    background-size: 100%;
+}
+
+.developer{
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    font-family: "MeroendaOne";
+}
+
+.first-developer{
     width: 49%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.second-developer{
+    width: 49%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 40px;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 2%;
+    height: 310px;
+    width: 380px;
+}
+
+.paragraph-developers{
+    font-size: 28px;
+}
+
+.developer-image{
+    width: 160px;
+}
+
+.sprites-container{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: black url("../img/sprites.png") no-repeat 10px;
+}
+
+.sprite2{
+    background: black url("../img/sprites.png") no-repeat -20px;
+}
+
+.dev-link{
+    display: flex;
+}
+
+.sprites-container:hover{
+    background-color: #609af2;
+}
+
+.footer-container{
+    background-color: #adadad;
+}
+
+.footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.footer-links{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 90px;
+    height: 100px;
+}
+
+.paragraph-footer{
+    font-size: 16px;
+    color: black;
+    font-family: "MeroendaOne";
+}
+
+.dev-names{
+    font-family: Dancing;
+    height: 42px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.dev-header{
+    font-family: MeroendaOne;
+    font-size: 40px;
+    font-weight: bold;
 }
