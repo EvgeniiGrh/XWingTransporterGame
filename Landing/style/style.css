@@ -4,6 +4,12 @@
 }
 
 @font-face {
+    font-family: "Dancing";
+    src: url("../fonts/DancingScript-Regular.woff ") format('woff');
+}
+
+
+@font-face {
     font-family: "MeroendaOne";
     src: url("../fonts/MeriendaOne-Regular.woff") format('woff');
 }
@@ -222,12 +228,19 @@ a:hover{
     font-style: italic;
 }
 
-.developers-container{
+.developers-block{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.developers-block-container{
     background: url("../img/developers-background.png") no-repeat;
     background-size: 100%;
 }
 
-.developers{
+.developer{
     display: flex;
     justify-content: space-between;
     color: white;
@@ -286,4 +299,37 @@ a:hover{
 
 .sprites-container:hover{
     background-color: #609af2;
+}
+
+.footer-container{
+    background-color: #adadad;
+}
+
+.footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.footer-links{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 90px;
+    height: 100px;
+}
+
+.paragraph-footer{
+    font-size: 16px;
+    color: black;
+    font-family: "MeroendaOne";
+}
+
+.dev-names{
+    font-family: Dancing;
+    height: 42px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
