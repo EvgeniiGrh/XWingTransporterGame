@@ -1,0 +1,130 @@
+@font-face {
+    font-family: "Anton";
+    src: url("../fonts/Anton-Regular.woff") format('woff');
+}
+
+*{
+    background-color: black;
+}
+
+.wrapper {
+    background-color: black;
+    color: orange;
+    width: 100%;
+    flex-direction: column;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.begin {
+    margin-top: 220px ;
+    width: 16em;
+    font-size: 200%;
+    font-weight: 400;
+    display: flex;
+    color: #4ee;
+    opacity: 0;
+    z-index: 1;
+    animation: intro 2s ease-out;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+.game-logo{
+    font-size: 90px;
+    line-height: 0.8em;
+    letter-spacing: -0.05em;
+    color: #000;
+    text-shadow: -2px -2px 0 #ff6, 2px -2px 0 #ff6, 2px 2px 0 #ff6;
+    opacity: 0;
+    z-index: 1;
+    animation: logo 7s ease-out 2.5s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.logo-word2{
+    font-size: 50px;
+}
+
+.game-logo{
+    font-family: Anton;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes intro {
+    0% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes logo {
+    0% { transform: scale(1); opacity: 1; }
+    50% { opacity: 1; }
+    100% { transform: scale(0.1); opacity: 0; }
+}
+
+/*scrolling*/
+.text-container{
+    position: absolute;
+    width: 18em;
+    height: 50em;
+    bottom: 0;
+    left: 50%;
+    margin-left: -9em;
+    font-size: 370%;
+    font-family: Arial;
+    text-align: justify;
+    overflow: hidden;
+    transform-origin: 50% 100%;
+    transform: perspective(300px) rotateX(25deg);
+}
+
+.text-container:after{
+    position: absolute;
+    content: ' ';
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 60%;
+    background-image: linear-gradient(top, rgba(0,0,0,1) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.text-paragraph{
+    margin: 0.8em 0;
+}
+
+.text-container p.center{
+    text-align: center;
+}
+
+.text{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    top: 100%;
+    animation: scroll 110s linear 4s infinite;
+}
+
+@keyframes scroll {
+    0% { top: 100% }
+    100% { top: -150% }
+}
+
+.allotted{
+    color: orangered;
+    text-decoration: underline;
+}
+
