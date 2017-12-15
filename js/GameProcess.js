@@ -12,6 +12,7 @@ export default class GameProcess {
     constructor() {
         this.movingObjects=[];
         this.enemiesArray=[];
+        this.inGame=true;
         this.lastSpaceshipPosition=0;
     };
 
@@ -76,6 +77,10 @@ export default class GameProcess {
         }
     }
 
+    pause() {
+        this.inGame=!this.inGame;
+    }
+
     startGame() {
         cancelAnimationFrame(this.animationFrameId);
         this.scene3D.scene.add(this.fightersContainer.mesh);
@@ -124,18 +129,21 @@ export default class GameProcess {
     }
 
     animateGameProcess() {
-        this.movingObjects.forEach((item)=>{
-            item.movement();
-        });
-        this.checkWholeCircle();
-        this.checkFightersPosition();
-        this.checkSpaceshipMovement();
-
-        this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
-        this.scene3D.controls.update();
         this.animationFrameId=requestAnimationFrame(this.animateGameProcess.bind(this));
 
-        this.checkCollision();
+        if (this.inGame) {
+            this.movingObjects.forEach((item)=>{
+                item.movement();
+            });
+            this.checkWholeCircle();
+            this.checkFightersPosition();
+            this.checkSpaceshipMovement();
+
+            this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
+            this.scene3D.controls.update();
+
+            this.checkCollision();
+        }
     }
 
     checkWholeCircle() {

@@ -24,20 +24,29 @@ class XWingTransporterGame {
 
     startLoading() {
         let percent = 3;
-        const game=new GameProcess();
-        game.init();
+        this.game=new GameProcess();
+        this.game.init();
 
         let id = setInterval(() => {
             if(percent === 103) {
                 this.menuScreen.classList.add("hide");
                 document.body.classList.add("hide-cursor");
-                game.startIntro();
+                this.game.startIntro();
+                this.setPauseListener();
                 clearInterval(id);
             }
             this.loading.innerText = `${percent}`+"%";
             percent += 5;
         }, 250);
         this.loading.innerText = `${percent}`+"%";
+    }
+
+    setPauseListener() {
+        document.addEventListener('keydown', (event) => {
+            if (event.keyCode===27) {
+                this.game.pause();
+            }
+        });
     }
 }
 

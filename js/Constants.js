@@ -53,7 +53,7 @@ export const SPACESHIP_OPTIONS = {
     },
 
     inGameCoordinates: {
-        z: 3.6,//3.6
+        z: 3.6,
         y: 1.2//1
     },
 
@@ -71,7 +71,7 @@ export const FIGHTERSCONTAINER_OPTIONS = {
         y: -30,
         z: -120
     },
-    maxZCoordinate: 14,
+    maxZCoordinate: 15,
     coordinateZToPlaySound: -14
 };
 
@@ -84,7 +84,7 @@ export const SCENE3D_OPTIONS = {
 
         inGameCoordinates: {
             z: 7,//6
-            y: 1//1
+            y: 1
         },
 
         verticalFieldOfView: 60,

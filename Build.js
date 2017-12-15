@@ -133,7 +133,7 @@ const SPACESHIP_OPTIONS = {
     },
 
     inGameCoordinates: {
-        z: 3.6,//3.6
+        z: 3.6,
         y: 1.2//1
     },
 
@@ -153,7 +153,7 @@ const FIGHTERSCONTAINER_OPTIONS = {
         y: -30,
         z: -120
     },
-    maxZCoordinate: 14,
+    maxZCoordinate: 15,
     coordinateZToPlaySound: -14
 };
 /* harmony export (immutable) */ __webpack_exports__["d"] = FIGHTERSCONTAINER_OPTIONS;
@@ -168,7 +168,7 @@ const SCENE3D_OPTIONS = {
 
         inGameCoordinates: {
             z: 7,//6
-            y: 1//1
+            y: 1
         },
 
         verticalFieldOfView: 60,
@@ -265,20 +265,29 @@ class XWingTransporterGame {
 
     startLoading() {
         let percent = 3;
-        const game=new __WEBPACK_IMPORTED_MODULE_0__GameProcess__["a" /* default */]();
-        game.init();
+        this.game=new __WEBPACK_IMPORTED_MODULE_0__GameProcess__["a" /* default */]();
+        this.game.init();
 
         let id = setInterval(() => {
             if(percent === 103) {
                 this.menuScreen.classList.add("hide");
                 document.body.classList.add("hide-cursor");
-                game.startIntro();
+                this.game.startIntro();
+                this.setPauseListener();
                 clearInterval(id);
             }
             this.loading.innerText = `${percent}`+"%";
             percent += 5;
         }, 250);
         this.loading.innerText = `${percent}`+"%";
+    }
+
+    setPauseListener() {
+        document.addEventListener('keydown', (event) => {
+            if (event.keyCode===27) {
+                this.game.pause();
+            }
+        });
     }
 }
 
@@ -313,6 +322,7 @@ class GameProcess {
     constructor() {
         this.movingObjects=[];
         this.enemiesArray=[];
+        this.inGame=true;
         this.lastSpaceshipPosition=0;
     };
 
@@ -377,6 +387,10 @@ class GameProcess {
         }
     }
 
+    pause() {
+        this.inGame=!this.inGame;
+    }
+
     startGame() {
         cancelAnimationFrame(this.animationFrameId);
         this.scene3D.scene.add(this.fightersContainer.mesh);
@@ -425,18 +439,21 @@ class GameProcess {
     }
 
     animateGameProcess() {
-        this.movingObjects.forEach((item)=>{
-            item.movement();
-        });
-        this.checkWholeCircle();
-        this.checkFightersPosition();
-        this.checkSpaceshipMovement();
-
-        this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
-        this.scene3D.controls.update();
         this.animationFrameId=requestAnimationFrame(this.animateGameProcess.bind(this));
 
-        this.checkCollision();
+        if (this.inGame) {
+            this.movingObjects.forEach((item)=>{
+                item.movement();
+            });
+            this.checkWholeCircle();
+            this.checkFightersPosition();
+            this.checkSpaceshipMovement();
+
+            this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
+            this.scene3D.controls.update();
+
+            this.checkCollision();
+        }
     }
 
     checkWholeCircle() {
