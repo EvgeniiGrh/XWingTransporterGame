@@ -2,8 +2,8 @@ import {SCENE3D_OPTIONS} from "./Constants";
 import Audio from "./Audio";
 
 export default class Scene3D {
-    constructor() {
-        this.canvas = document.getElementById("canvas");
+    constructor(canvas) {
+        this.canvas = canvas;
         this.createScene();
     }
 
@@ -28,9 +28,13 @@ export default class Scene3D {
             SCENE3D_OPTIONS.cameraOptions.nearPlane,
             SCENE3D_OPTIONS.cameraOptions.farPlane);
 
+        this.setCameraPrimaryPosition();
+        this.scene.add(this.camera);
+    }
+
+    setCameraPrimaryPosition() {
         this.camera.position.y = SCENE3D_OPTIONS.cameraOptions.inIntroCoordinates.y;
         this.camera.position.z = SCENE3D_OPTIONS.cameraOptions.inIntroCoordinates.z;
-        this.scene.add(this.camera);
     }
 
     createCommonLight() {
@@ -49,11 +53,11 @@ export default class Scene3D {
     }
 
     createLights() {
-        const pointLight = new THREE.PointLight(0xfff000, 1, 50);
-        pointLight.position.set(0, 25, 1.2);
-        this.scene.add(pointLight);
+        this.pointLight = new THREE.PointLight(0xfff000, 1, 50);
+        this.pointLight.position.set(0, 25, 1.2);
+        this.scene.add(this.pointLight);
 
-        const pointLightHelper = new THREE.PointLightHelper(pointLight, 4);
+        const pointLightHelper = new THREE.PointLightHelper(this.pointLight, 4);
         this.scene.add(pointLightHelper);
     }
 }

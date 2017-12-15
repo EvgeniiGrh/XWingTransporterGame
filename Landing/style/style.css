@@ -164,19 +164,15 @@ a:hover{
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    width: 100%;
+    width: 745px;
     flex-wrap: wrap;
 }
 .other-color{
     background: #eaeaea;
 }
 
-.js-log{
-    width: 290px;
-}
-
-.webgl-log{
-    width: 540px;
+.image-tech{
+    width: 250px;
 }
 
 .mouse-container{

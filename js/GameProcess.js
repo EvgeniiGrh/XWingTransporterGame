@@ -5,19 +5,20 @@ import Spaceship from "./Spaceship";
 import Enemy from "./Enemy";
 import EnemiesContainer from "./EnemiesContainer";
 import StarCruiser from "./StarCruiser";
-import {SCENE3D_OPTIONS, SPACESHIP_OPTIONS, ENEMY_OPTIONS} from "./Constants";
-import Explosion from "./Explosion";
+import {SCENE3D_OPTIONS, SPACESHIP_OPTIONS, ENEMY_OPTIONS, FINISH_OPTIONS} from "./Constants";
 
 export default class GameProcess {
-    constructor() {
+    constructor(canvas) {
         this.movingObjects=[];
         this.enemiesArray=[];
         this.inGame=true;
-        this.lastSpaceshipPosition=0;
+        this.firstGame=true;
+        this.lastSpaceshipPosition=null;
+        this.canvas = canvas;
     };
 
     init() {
-        this.scene3D = new Scene3D();
+        this.scene3D = new Scene3D(this.canvas);
 
          // let axis = new THREE.AxisHelper(500);//add temporary Axises
          // this.scene3D.scene.add(axis);
@@ -77,14 +78,34 @@ export default class GameProcess {
         }
     }
 
-    pause() {
+    pause(menuScreen) {
         this.inGame=!this.inGame;
+
+        if (this.inGame) {
+            //console.log("show canvas");
+            this.canvas.classList.remove('hide');
+            menuScreen.classList.add("hide");
+
+            if (!this.lastSpaceshipPosition) {
+                this.animateIntro();
+            } else this.animateGameProcess();
+
+        } else {
+            //console.log("hide canvas");
+            this.canvas.classList.add('hide');
+            menuScreen.classList.remove("hide");
+            cancelAnimationFrame(this.animationFrameId);
+        }
     }
 
     startGame() {
         cancelAnimationFrame(this.animationFrameId);
         this.scene3D.scene.add(this.fightersContainer.mesh);
-        this.spaceship.listenSpaceshipMove();
+
+        if (this.firstGame) {
+            this.spaceship.listenSpaceshipMove();
+        }
+
         this.enemyPosition = new THREE.Vector3();
         this.animateGameProcess();
     }
@@ -99,8 +120,8 @@ export default class GameProcess {
         this.fightersContainer.setPrimaryPosition();
         this.movingObjects.push(this.fightersContainer);
 
-        this.ship=new THREE.ObjectLoader();
-        this.ship.load( ENEMY_OPTIONS.link, ( object ) => {
+        this.shipLoader=new THREE.ObjectLoader();
+        this.shipLoader.load( ENEMY_OPTIONS.link, ( object ) => {
 
             for(let i=0;i<enemiesQuantity+1;i++) {
                 let copy=object.clone();
@@ -109,16 +130,8 @@ export default class GameProcess {
                 enemy.mesh.add(copy);
                 enemy.setRandomPosition();
 
-                if (i!==0) {//so the coordinates of each enemy don't match other enemies
-                    while (this.enemiesArray.some(
-                        (item) => {
-                            return (item.mesh.position.x===enemy.mesh.position.x ||
-                                item.mesh.position.y===enemy.mesh.position.y ||
-                                item.mesh.position.z===enemy.mesh.position.z);
-                        }
-                    )) {
-                        enemy.setRandomPosition();
-                    }
+                if (i!==0) {
+                    this.checkEnemiesDistribution(enemy);
                 }
 
                 this.enemiesArray.push(enemy);
@@ -128,10 +141,21 @@ export default class GameProcess {
         });
     }
 
-    animateGameProcess() {
-        this.animationFrameId=requestAnimationFrame(this.animateGameProcess.bind(this));
+    checkEnemiesDistribution(enemy) {//so the coordinates of each enemy don't match other enemies
+        while (this.enemiesArray.some(
+            (item) => {
+                return (item.mesh.position.x===enemy.mesh.position.x ||
+                    item.mesh.position.y===enemy.mesh.position.y ||
+                    item.mesh.position.z===enemy.mesh.position.z);
+            }
+        )) {
+            enemy.setRandomPosition();
+        }
+    }
 
-        if (this.inGame) {
+    animateGameProcess() {
+        this.animationFrameId=requestAnimationFrame(()=>this.animateGameProcess());
+
             this.movingObjects.forEach((item)=>{
                 item.movement();
             });
@@ -143,7 +167,6 @@ export default class GameProcess {
             this.scene3D.controls.update();
 
             this.checkCollision();
-        }
     }
 
     checkWholeCircle() {
@@ -164,7 +187,7 @@ export default class GameProcess {
             this.fightersContainer.setPrimaryPosition();
             this.enemiesArray.forEach((item) => {
                 item.setRandomPosition();
-            })
+            });
         }
     }
 
@@ -179,45 +202,42 @@ export default class GameProcess {
     checkCollision() {
         this.enemiesArray.forEach(( enemy ) => {
             this.enemyPosition.setFromMatrixPosition( enemy.mesh.matrixWorld );
-                if (this.enemyPosition.manhattanDistanceTo(this.spaceship.mesh.position)<=0.95) {
+                if (this.enemyPosition.manhattanDistanceTo(this.spaceship.mesh.position)<=0.9) {
                     this.finishGame();
                 }
         });
     }
 
     finishGame() {
-        cancelAnimationFrame(this.animationFrameId );
-
-        this.scene3D.createCommonLight();
-        //this.scene3D.createLights();
-        this.scene3D.scene.remove(this.spaceship.mesh);
-
-        this.addFireBall();
-        this.animateGameFinish();
+        cancelAnimationFrame(this.animationFrameId);
         this.scene3D.audio.playFailSound();
+        this.scene3D.audio.stopMainSound();
+
+        this.showFinishWindow();
     }
 
-    addFireBall() {
-        // let sphereGeometry = new THREE.DodecahedronGeometry( 2.7, 1);
-        // let sphereMaterial = new THREE.MeshStandardMaterial( { color: 0xd33404 ,shading: THREE.FlatShading} );
-        // this.fireBall = new THREE.Mesh( sphereGeometry, sphereMaterial );
-        //
-        // this.fireBall.position.x=this.spaceship.mesh.position.x;
-        // this.fireBall.position.y=this.spaceship.mesh.position.y;
-        // this.fireBall.position.z=this.spaceship.mesh.position.z-2;
+    restart() {
+        debugger;
+        this.scene3D.scene.remove(this.fightersContainer.mesh);
+        this.scene3D.audio.stopMainSound();
 
-        this.explosion= new Explosion();
-        this.explosion.mesh.position.x=this.spaceship.mesh.position.x;
-        this.explosion.mesh.position.y=this.spaceship.mesh.position.y+3;
-        this.explosion.mesh.position.z=this.spaceship.mesh.position.z-2;
+        this.movingObjects.forEach((item)=>{
+            item.setPrimaryPosition();
+        });
+        this.spaceship.setPrimaryPosition();
+        this.scene3D.setCameraPrimaryPosition();
+        this.inGame=true;
+        this.lastSpaceshipPosition=null;
+        if (this.spaceship.inListening) {
+            this.firstGame=false;
+        }
 
-        this.scene3D.scene.add(this.explosion.mesh);
+        this.startIntro();
     }
 
-    animateGameFinish() {
-        //this.fireBall.rotation.y+=1;
-        this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
-        this.scene3D.controls.update();
-        this.animationFrameId=requestAnimationFrame(this.animateGameFinish.bind(this));
+    showFinishWindow() {
+        const event = new Event("keydown");
+        event.keyCode = FINISH_OPTIONS.finishCode;
+        document.dispatchEvent(event);
     }
 }

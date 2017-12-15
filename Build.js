@@ -92,10 +92,15 @@ const WINDOW_OPTIONS = {
 
 
 const GAMEFIELD_OPTIONS = {
-    link: './src/images/DS.jpg',
+    link: './res/images/DS.jpg',
     radius: 30,
     segmentsQuantity: 90,
     angleOfSlope: Math.PI/3,
+    Coordinates: {
+      x: 0,
+      y: -31,
+      z: 0
+    },
     rotationSpeed: 0.006,
     increaseStep: 0.003,
     wholeCircle: 2*Math.PI
@@ -105,7 +110,7 @@ const GAMEFIELD_OPTIONS = {
 
 const ENEMY_OPTIONS = {
     object: [],
-    link: './src/JSON_Models/TIE_Fighter.json',
+    link: './res/JSON_Models/TIE_Fighter.json',
     rotationSpeed: 0.01,
     radius: 0.5,
     detail: 1,
@@ -115,33 +120,36 @@ const ENEMY_OPTIONS = {
 
 
 const SKYBOX_OPTIONS = {
-    link: './src/images/hubble-min.jpg',
+    link: './res/images/hubble-min.jpg',
     radius: 600,
     segmentsQuantity: 200,
     angleOfSlope: Math.PI/3,
     rotationSpeed: 0.0006,
-    increaseStep: 0//0.0002
+    increaseStep: 0.00000002//0.0002
 };
 /* harmony export (immutable) */ __webpack_exports__["h"] = SKYBOX_OPTIONS;
 
 
 const SPACESHIP_OPTIONS = {
-    link: './src/JSON_Models/spaceship.json',
+    link: './res/JSON_Models/spaceship.json',
     inIntroCoordinates: {
+        x: 0,
         y: 88.3,
         z: 92.6
     },
 
     inGameCoordinates: {
-        z: 3.6,
-        y: 1.2//1
+        x: 0,
+        y: 1.2,//1
+        z: 3.6
     },
 
-    flyWidthBorder: WINDOW_OPTIONS.gameWindowWidth*0.002,
-    flyHeightBorder: WINDOW_OPTIONS.gameWindowHeight*0.002,
+    flyWidthBorder: WINDOW_OPTIONS.gameWindowWidth*0.0023,
+    flyHeightBorder: WINDOW_OPTIONS.gameWindowHeight*0.0023,
     turningSpeed: 0.02,
     turningBackSpeed: 0.014,
-    alignmentPosition:0
+    alignmentPosition: 0,
+    circle: 2*Math.PI
 };
 /* harmony export (immutable) */ __webpack_exports__["i"] = SPACESHIP_OPTIONS;
 
@@ -150,25 +158,28 @@ const FIGHTERSCONTAINER_OPTIONS = {
     flySpeed: 0.5,
     increaseStep: 0.04,
     distanceCoordinates: {
+        x: 0,
         y: -30,
         z: -120
     },
     maxZCoordinate: 15,
     coordinateZToPlaySound: -14
 };
-/* harmony export (immutable) */ __webpack_exports__["d"] = FIGHTERSCONTAINER_OPTIONS;
+/* harmony export (immutable) */ __webpack_exports__["c"] = FIGHTERSCONTAINER_OPTIONS;
 
 
 const SCENE3D_OPTIONS = {
     cameraOptions: {
         inIntroCoordinates: {
+            x: 0,
             y: 91,
             z: 96
         },
 
         inGameCoordinates: {
-            z: 7,//6
-            y: 1
+            x: 0,
+            y: 1,
+            z: 7//6
         },
 
         verticalFieldOfView: 60,
@@ -194,8 +205,9 @@ const AUDIO_OPTIONS = {
 
 
 const STARCRUISER_OPTIONS = {
-    link: './src/JSON_Models/destroyer.json',
+    link: './res/JSON_Models/destroyer.json',
     distanceCoordinates: {
+        x: 0,
         y: 15,
         z: -145
     }
@@ -204,13 +216,20 @@ const STARCRUISER_OPTIONS = {
 
 
 const EXPLOSION_OPTIONS = {
-    link: './src/JSON_Models/explosion.json',
+    link: './res/JSON_Models/explosion.json',
     distanceCoordinates: {
+        x: 0,
         y: 30,
         z: 0
     }
 };
-/* harmony export (immutable) */ __webpack_exports__["c"] = EXPLOSION_OPTIONS;
+/* unused harmony export EXPLOSION_OPTIONS */
+
+
+const FINISH_OPTIONS = {
+    finishCode: 222
+};
+/* harmony export (immutable) */ __webpack_exports__["d"] = FINISH_OPTIONS;
 
 
 
@@ -239,13 +258,20 @@ class ShapeCreator {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__GameProcess__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Constants__ = __webpack_require__(0);
+
 
 
 class XWingTransporterGame {
     constructor() {
-        this.menu=document.querySelector("#menu");
+        this.canvas = document.getElementById("canvas");
         this.menuScreen = document.querySelector("#menu-screen");
+        this.menu=document.querySelector("#menu");
+
+        this.historyButton=document.querySelector("#history");
         this.playButton=document.querySelector("#play");
+        this.aboutButton=document.querySelector("#about");
+
         this.setPlayListener();
     }
 
@@ -265,15 +291,15 @@ class XWingTransporterGame {
 
     startLoading() {
         let percent = 3;
-        this.game=new __WEBPACK_IMPORTED_MODULE_0__GameProcess__["a" /* default */]();
+        this.game=new __WEBPACK_IMPORTED_MODULE_0__GameProcess__["a" /* default */](this.canvas);
         this.game.init();
 
         let id = setInterval(() => {
             if(percent === 103) {
-                this.menuScreen.classList.add("hide");
-                document.body.classList.add("hide-cursor");
+                this.canvas.classList.add("hide-cursor");
+                this.clearMenu();
                 this.game.startIntro();
-                this.setPauseListener();
+                this.setPauseListeners();
                 clearInterval(id);
             }
             this.loading.innerText = `${percent}`+"%";
@@ -282,12 +308,87 @@ class XWingTransporterGame {
         this.loading.innerText = `${percent}`+"%";
     }
 
-    setPauseListener() {
+    clearMenu() {
+        this.menuScreen.removeChild(this.loading);
+        this.menuScreen.classList.add("hide");
+
+        this.menu.removeChild(this.playButton);
+        this.menu.removeChild(this.historyButton);
+        this.menu.removeChild(this.aboutButton);
+    }
+
+    setPauseListeners() {
+        this.createPauseElements();
+        this.createPauseMenu();
+
+        this.resumeButton.addEventListener('click', (event) => {
+            this.game.pause(this.menuScreen);
+        });
+
+        this.restartButton.addEventListener('click', () => {
+            this.canvas.classList.remove("hide");
+            this.menuScreen.classList.add("hide");
+
+            if (this.menu.lastChild===this.aboutButton) {
+                this.menu.removeChild(this.aboutButton);
+                this.menu.insertBefore(this.resumeButton, this.restartButton);
+            }
+
+            this.game.restart();
+        });
+
+        this.menuButton.addEventListener('click', () => {
+            document.location.href="./index.html";
+        });
+
         document.addEventListener('keydown', (event) => {
             if (event.keyCode===27) {
-                this.game.pause();
+                this.game.pause(this.menuScreen);
+            }
+
+            if (event.keyCode===__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* FINISH_OPTIONS */].finishCode) {
+                this.createFinishMenu();
+                this.game.pause(this.menuScreen);
             }
         });
+
+    }
+
+    createPauseElements() {
+        this.menu.classList.remove("hide");
+
+        this.restartButton=document.createElement('div');
+        this.restartButton.classList.add("button");
+
+        this.header3=document.createElement('h3');
+        this.header3.innerText="RESTART";
+        this.restartButton.appendChild(this.header3);
+        //--------------------------------------------------------------------
+        this.resumeButton=document.createElement('div');
+        this.resumeButton.classList.add("button");
+
+        this.header4=document.createElement('h3');
+        this.header4.innerText="RESUME";
+        this.resumeButton.appendChild(this.header4);
+        //--------------------------------------------------------------------
+        this.menuButton=document.createElement('div');
+        this.menuButton.classList.add("button");
+
+        this.header4=document.createElement('h3');
+        this.header4.innerText="MENU";
+        this.menuButton.appendChild(this.header4);
+        //--------------------------------------------------------------------
+    }
+
+    createPauseMenu() {
+        this.menu.appendChild(this.resumeButton);
+        this.menu.appendChild(this.restartButton);
+        this.menu.appendChild(this.menuButton);
+    }
+
+    createFinishMenu() {
+        this.menu.removeChild(this.resumeButton);
+        this.menu.appendChild(this.aboutButton);
     }
 }
 
@@ -307,8 +408,6 @@ new XWingTransporterGame();
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__EnemiesContainer__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__StarCruiser__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Constants__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Explosion__ = __webpack_require__(12);
-
 
 
 
@@ -319,15 +418,17 @@ new XWingTransporterGame();
 
 
 class GameProcess {
-    constructor() {
+    constructor(canvas) {
         this.movingObjects=[];
         this.enemiesArray=[];
         this.inGame=true;
-        this.lastSpaceshipPosition=0;
+        this.firstGame=true;
+        this.lastSpaceshipPosition=null;
+        this.canvas = canvas;
     };
 
     init() {
-        this.scene3D = new __WEBPACK_IMPORTED_MODULE_0__Scene3D__["a" /* default */]();
+        this.scene3D = new __WEBPACK_IMPORTED_MODULE_0__Scene3D__["a" /* default */](this.canvas);
 
          // let axis = new THREE.AxisHelper(500);//add temporary Axises
          // this.scene3D.scene.add(axis);
@@ -387,14 +488,34 @@ class GameProcess {
         }
     }
 
-    pause() {
+    pause(menuScreen) {
         this.inGame=!this.inGame;
+
+        if (this.inGame) {
+            //console.log("show canvas");
+            this.canvas.classList.remove('hide');
+            menuScreen.classList.add("hide");
+
+            if (!this.lastSpaceshipPosition) {
+                this.animateIntro();
+            } else this.animateGameProcess();
+
+        } else {
+            //console.log("hide canvas");
+            this.canvas.classList.add('hide');
+            menuScreen.classList.remove("hide");
+            cancelAnimationFrame(this.animationFrameId);
+        }
     }
 
     startGame() {
         cancelAnimationFrame(this.animationFrameId);
         this.scene3D.scene.add(this.fightersContainer.mesh);
-        this.spaceship.listenSpaceshipMove();
+
+        if (this.firstGame) {
+            this.spaceship.listenSpaceshipMove();
+        }
+
         this.enemyPosition = new THREE.Vector3();
         this.animateGameProcess();
     }
@@ -409,8 +530,8 @@ class GameProcess {
         this.fightersContainer.setPrimaryPosition();
         this.movingObjects.push(this.fightersContainer);
 
-        this.ship=new THREE.ObjectLoader();
-        this.ship.load( __WEBPACK_IMPORTED_MODULE_7__Constants__["b" /* ENEMY_OPTIONS */].link, ( object ) => {
+        this.shipLoader=new THREE.ObjectLoader();
+        this.shipLoader.load( __WEBPACK_IMPORTED_MODULE_7__Constants__["b" /* ENEMY_OPTIONS */].link, ( object ) => {
 
             for(let i=0;i<enemiesQuantity+1;i++) {
                 let copy=object.clone();
@@ -419,16 +540,8 @@ class GameProcess {
                 enemy.mesh.add(copy);
                 enemy.setRandomPosition();
 
-                if (i!==0) {//so the coordinates of each enemy don't match other enemies
-                    while (this.enemiesArray.some(
-                        (item) => {
-                            return (item.mesh.position.x===enemy.mesh.position.x ||
-                                item.mesh.position.y===enemy.mesh.position.y ||
-                                item.mesh.position.z===enemy.mesh.position.z);
-                        }
-                    )) {
-                        enemy.setRandomPosition();
-                    }
+                if (i!==0) {
+                    this.checkEnemiesDistribution(enemy);
                 }
 
                 this.enemiesArray.push(enemy);
@@ -438,10 +551,21 @@ class GameProcess {
         });
     }
 
-    animateGameProcess() {
-        this.animationFrameId=requestAnimationFrame(this.animateGameProcess.bind(this));
+    checkEnemiesDistribution(enemy) {//so the coordinates of each enemy don't match other enemies
+        while (this.enemiesArray.some(
+            (item) => {
+                return (item.mesh.position.x===enemy.mesh.position.x ||
+                    item.mesh.position.y===enemy.mesh.position.y ||
+                    item.mesh.position.z===enemy.mesh.position.z);
+            }
+        )) {
+            enemy.setRandomPosition();
+        }
+    }
 
-        if (this.inGame) {
+    animateGameProcess() {
+        this.animationFrameId=requestAnimationFrame(()=>this.animateGameProcess());
+
             this.movingObjects.forEach((item)=>{
                 item.movement();
             });
@@ -453,7 +577,6 @@ class GameProcess {
             this.scene3D.controls.update();
 
             this.checkCollision();
-        }
     }
 
     checkWholeCircle() {
@@ -474,7 +597,7 @@ class GameProcess {
             this.fightersContainer.setPrimaryPosition();
             this.enemiesArray.forEach((item) => {
                 item.setRandomPosition();
-            })
+            });
         }
     }
 
@@ -489,46 +612,43 @@ class GameProcess {
     checkCollision() {
         this.enemiesArray.forEach(( enemy ) => {
             this.enemyPosition.setFromMatrixPosition( enemy.mesh.matrixWorld );
-                if (this.enemyPosition.manhattanDistanceTo(this.spaceship.mesh.position)<=0.95) {
+                if (this.enemyPosition.manhattanDistanceTo(this.spaceship.mesh.position)<=0.9) {
                     this.finishGame();
                 }
         });
     }
 
     finishGame() {
-        cancelAnimationFrame(this.animationFrameId );
-
-        this.scene3D.createCommonLight();
-        //this.scene3D.createLights();
-        this.scene3D.scene.remove(this.spaceship.mesh);
-
-        this.addFireBall();
-        this.animateGameFinish();
+        cancelAnimationFrame(this.animationFrameId);
         this.scene3D.audio.playFailSound();
+        this.scene3D.audio.stopMainSound();
+
+        this.showFinishWindow();
     }
 
-    addFireBall() {
-        // let sphereGeometry = new THREE.DodecahedronGeometry( 2.7, 1);
-        // let sphereMaterial = new THREE.MeshStandardMaterial( { color: 0xd33404 ,shading: THREE.FlatShading} );
-        // this.fireBall = new THREE.Mesh( sphereGeometry, sphereMaterial );
-        //
-        // this.fireBall.position.x=this.spaceship.mesh.position.x;
-        // this.fireBall.position.y=this.spaceship.mesh.position.y;
-        // this.fireBall.position.z=this.spaceship.mesh.position.z-2;
+    restart() {
+        debugger;
+        this.scene3D.scene.remove(this.fightersContainer.mesh);
+        this.scene3D.audio.stopMainSound();
 
-        this.explosion= new __WEBPACK_IMPORTED_MODULE_8__Explosion__["a" /* default */]();
-        this.explosion.mesh.position.x=this.spaceship.mesh.position.x;
-        this.explosion.mesh.position.y=this.spaceship.mesh.position.y+3;
-        this.explosion.mesh.position.z=this.spaceship.mesh.position.z-2;
+        this.movingObjects.forEach((item)=>{
+            item.setPrimaryPosition();
+        });
+        this.spaceship.setPrimaryPosition();
+        this.scene3D.setCameraPrimaryPosition();
+        this.inGame=true;
+        this.lastSpaceshipPosition=null;
+        if (this.spaceship.inListening) {
+            this.firstGame=false;
+        }
 
-        this.scene3D.scene.add(this.explosion.mesh);
+        this.startIntro();
     }
 
-    animateGameFinish() {
-        //this.fireBall.rotation.y+=1;
-        this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
-        this.scene3D.controls.update();
-        this.animationFrameId=requestAnimationFrame(this.animateGameFinish.bind(this));
+    showFinishWindow() {
+        const event = new Event("keydown");
+        event.keyCode = __WEBPACK_IMPORTED_MODULE_7__Constants__["d" /* FINISH_OPTIONS */].finishCode;
+        document.dispatchEvent(event);
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = GameProcess;
@@ -546,8 +666,8 @@ class GameProcess {
 
 
 class Scene3D {
-    constructor() {
-        this.canvas = document.getElementById("canvas");
+    constructor(canvas) {
+        this.canvas = canvas;
         this.createScene();
     }
 
@@ -572,9 +692,13 @@ class Scene3D {
             __WEBPACK_IMPORTED_MODULE_0__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.nearPlane,
             __WEBPACK_IMPORTED_MODULE_0__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.farPlane);
 
+        this.setCameraPrimaryPosition();
+        this.scene.add(this.camera);
+    }
+
+    setCameraPrimaryPosition() {
         this.camera.position.y = __WEBPACK_IMPORTED_MODULE_0__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.inIntroCoordinates.y;
         this.camera.position.z = __WEBPACK_IMPORTED_MODULE_0__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.inIntroCoordinates.z;
-        this.scene.add(this.camera);
     }
 
     createCommonLight() {
@@ -593,11 +717,11 @@ class Scene3D {
     }
 
     createLights() {
-        const pointLight = new THREE.PointLight(0xfff000, 1, 50);
-        pointLight.position.set(0, 25, 1.2);
-        this.scene.add(pointLight);
+        this.pointLight = new THREE.PointLight(0xfff000, 1, 50);
+        this.pointLight.position.set(0, 25, 1.2);
+        this.scene.add(this.pointLight);
 
-        const pointLightHelper = new THREE.PointLightHelper(pointLight, 4);
+        const pointLightHelper = new THREE.PointLightHelper(this.pointLight, 4);
         this.scene.add(pointLightHelper);
     }
 }
@@ -710,6 +834,10 @@ class SkyBox extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default 
         //this.skyBox.renderDepth = 1000.0;
     }
 
+    setPrimaryPosition() {
+        this.mesh.rotation.x=0;
+    }
+
     movement() {
         this.mesh.rotation.x+=this.rotationSpeed;
     }
@@ -747,11 +875,11 @@ class GameField extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
         // material.transparent=true;
         // material.opacity=0;
         this.mesh = new THREE.Mesh( geometry, material );
-        this.setPosition();
+        this.setPrimaryPosition();
     }
 
-    setPosition() {
-        this.mesh.position.y=-31;//-30.5
+    setPrimaryPosition() {
+        this.mesh.position.y=__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* GAMEFIELD_OPTIONS */].Coordinates.y;
         this.mesh.rotation.z=__WEBPACK_IMPORTED_MODULE_1__Constants__["e" /* GAMEFIELD_OPTIONS */].angleOfSlope;
     }
 
@@ -787,6 +915,7 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
     constructor() {
         super();
         this.lastTurnCoordinateX=0;
+        this.inListening=false;
     }
 
     createMesh() {
@@ -795,24 +924,26 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
         this.plane.load( __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].link, ( object ) => {
             this.mesh.add(object);
         });
-        this.setPosition();
+        this.setPrimaryPosition();
     }
 
-    setPosition() {
+    setPrimaryPosition() {
         this.mesh.position.z = __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].inIntroCoordinates.z;
         this.mesh.position.y = __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].inIntroCoordinates.y;
+        this.mesh.rotation.z=0;
     }
 
     listenSpaceshipMove() {
-        document.addEventListener('mousemove', this.setMouseMoveListener.bind(this));
+        this.inListening=true;
+        document.addEventListener('mousemove', this.mouseMoveListener.bind(this));
     }
 
-    setMouseMoveListener(event) {
+    mouseMoveListener(event) {
         let tx = -1 + (event.clientX / __WEBPACK_IMPORTED_MODULE_1__Constants__["k" /* WINDOW_OPTIONS */].gameWindowWidth)*2;
         let ty = 1 - (event.clientY / __WEBPACK_IMPORTED_MODULE_1__Constants__["k" /* WINDOW_OPTIONS */].gameWindowHeight)*2;
 
         const currentX = this.normalizePosition(tx, -1, 1, -__WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].flyWidthBorder, __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].flyWidthBorder);
-        const currentY = this.normalizePosition(ty, -1, 1, -0.85, 2);//-0.47, 1.6//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
+        const currentY = this.normalizePosition(ty, -1, 1, -0.86, 2);//-0.47, 1.6//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
 
         this.mesh.position.x = currentX;
         this.mesh.position.y = currentY;
@@ -836,11 +967,19 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
     }
 
     alignSpaceship() {
-        if (this.mesh.rotation.z > __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].alignmentPosition) {
+        if (this.mesh.rotation.z > __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].alignmentPosition &&
+            this.mesh.rotation.z < __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].circle ) {
             this.mesh.rotation.z -= __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].turningBackSpeed;
         }
-        else {
+
+        if (this.mesh.rotation.z < __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].alignmentPosition &&
+            this.mesh.rotation.z >- __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].circle ) {
             this.mesh.rotation.z += __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].turningBackSpeed;
+        }
+
+        if (this.mesh.rotation.z > __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].circle ||
+            this.mesh.rotation.z <- __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].circle) {
+            this.mesh.rotation.z=0;
         }
     }
 
@@ -903,7 +1042,7 @@ class Enemy extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default *
 class EnemiesContainer extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default */]{
     constructor() {
         super();
-        this.flySpeed=__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* FIGHTERSCONTAINER_OPTIONS */].flySpeed;
+        this.flySpeed=__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].flySpeed;
     }
 
     createMesh() {
@@ -911,16 +1050,16 @@ class EnemiesContainer extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /
     }
 
     setPrimaryPosition() {
-        this.mesh.position.z=__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* FIGHTERSCONTAINER_OPTIONS */].distanceCoordinates.z;
-        this.mesh.position.y=__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* FIGHTERSCONTAINER_OPTIONS */].distanceCoordinates.y;
+        this.mesh.position.z=__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].distanceCoordinates.z;
+        this.mesh.position.y=__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].distanceCoordinates.y;
     }
 
     isBehindCamera() {
-        return this.mesh.position.z>__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* FIGHTERSCONTAINER_OPTIONS */].maxZCoordinate;
+        return this.mesh.position.z>__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].maxZCoordinate;
     }
 
     isNearTheSpaceship() {
-        return this.mesh.position.z>__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* FIGHTERSCONTAINER_OPTIONS */].coordinateZToPlaySound;
+        return this.mesh.position.z>__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].coordinateZToPlaySound;
     }
 
     movement() {
@@ -928,7 +1067,7 @@ class EnemiesContainer extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /
     }
 
     increaseMovementSpeed() {
-        this.flySpeed+=__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* FIGHTERSCONTAINER_OPTIONS */].increaseStep;
+        this.flySpeed+=__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].increaseStep;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = EnemiesContainer;
@@ -975,44 +1114,6 @@ class StarCruiser extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* def
 
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = StarCruiser;
-
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Constants__ = __webpack_require__(0);
-
-
-
-class Explosion extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default */] {
-
-    constructor() {
-        super();
-    }
-
-    createMesh() {
-        this.mesh=new THREE.Object3D();
-        this.ship=new THREE.ObjectLoader();
-        this.ship.load( __WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* EXPLOSION_OPTIONS */].link, ( object ) => {
-            this.mesh.add(object);
-            this.t=object;
-        });
-
-        this.setPrimaryPosition();
-    }
-
-    setPrimaryPosition() {
-        this.mesh.position.z=__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* EXPLOSION_OPTIONS */].distanceCoordinates.z;
-        this.mesh.position.y=__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* EXPLOSION_OPTIONS */].distanceCoordinates.y;
-        //this.mesh.rotation.y=Math.PI/2;
-    }
-
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Explosion;
 
 
 

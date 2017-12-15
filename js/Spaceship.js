@@ -6,6 +6,7 @@ export default class Spaceship extends ShapeCreator {
     constructor() {
         super();
         this.lastTurnCoordinateX=0;
+        this.inListening=false;
     }
 
     createMesh() {
@@ -14,24 +15,26 @@ export default class Spaceship extends ShapeCreator {
         this.plane.load( SPACESHIP_OPTIONS.link, ( object ) => {
             this.mesh.add(object);
         });
-        this.setPosition();
+        this.setPrimaryPosition();
     }
 
-    setPosition() {
+    setPrimaryPosition() {
         this.mesh.position.z = SPACESHIP_OPTIONS.inIntroCoordinates.z;
         this.mesh.position.y = SPACESHIP_OPTIONS.inIntroCoordinates.y;
+        this.mesh.rotation.z=0;
     }
 
     listenSpaceshipMove() {
-        document.addEventListener('mousemove', this.setMouseMoveListener.bind(this));
+        this.inListening=true;
+        document.addEventListener('mousemove', this.mouseMoveListener.bind(this));
     }
 
-    setMouseMoveListener(event) {
+    mouseMoveListener(event) {
         let tx = -1 + (event.clientX / WINDOW_OPTIONS.gameWindowWidth)*2;
         let ty = 1 - (event.clientY / WINDOW_OPTIONS.gameWindowHeight)*2;
 
         const currentX = this.normalizePosition(tx, -1, 1, -SPACESHIP_OPTIONS.flyWidthBorder, SPACESHIP_OPTIONS.flyWidthBorder);
-        const currentY = this.normalizePosition(ty, -1, 1, -0.85, 2);//-0.47, 1.6//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
+        const currentY = this.normalizePosition(ty, -1, 1, -0.86, 2);//-0.47, 1.6//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
 
         this.mesh.position.x = currentX;
         this.mesh.position.y = currentY;
@@ -55,11 +58,19 @@ export default class Spaceship extends ShapeCreator {
     }
 
     alignSpaceship() {
-        if (this.mesh.rotation.z > SPACESHIP_OPTIONS.alignmentPosition) {
+        if (this.mesh.rotation.z > SPACESHIP_OPTIONS.alignmentPosition &&
+            this.mesh.rotation.z < SPACESHIP_OPTIONS.circle ) {
             this.mesh.rotation.z -= SPACESHIP_OPTIONS.turningBackSpeed;
         }
-        else {
+
+        if (this.mesh.rotation.z < SPACESHIP_OPTIONS.alignmentPosition &&
+            this.mesh.rotation.z >- SPACESHIP_OPTIONS.circle ) {
             this.mesh.rotation.z += SPACESHIP_OPTIONS.turningBackSpeed;
+        }
+
+        if (this.mesh.rotation.z > SPACESHIP_OPTIONS.circle ||
+            this.mesh.rotation.z <- SPACESHIP_OPTIONS.circle) {
+            this.mesh.rotation.z=0;
         }
     }
 

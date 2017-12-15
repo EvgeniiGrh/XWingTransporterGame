@@ -16,11 +16,11 @@ export default class GameField extends ShapeCreator {
         // material.transparent=true;
         // material.opacity=0;
         this.mesh = new THREE.Mesh( geometry, material );
-        this.setPosition();
+        this.setPrimaryPosition();
     }
 
-    setPosition() {
-        this.mesh.position.y=-31;//-30.5
+    setPrimaryPosition() {
+        this.mesh.position.y=GAMEFIELD_OPTIONS.Coordinates.y;
         this.mesh.rotation.z=GAMEFIELD_OPTIONS.angleOfSlope;
     }
 

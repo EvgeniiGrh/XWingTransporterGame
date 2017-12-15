@@ -18,10 +18,15 @@ export const WINDOW_OPTIONS = {
 };
 
 export const GAMEFIELD_OPTIONS = {
-    link: './src/images/DS.jpg',
+    link: './res/images/DS.jpg',
     radius: 30,
     segmentsQuantity: 90,
     angleOfSlope: Math.PI/3,
+    Coordinates: {
+      x: 0,
+      y: -31,
+      z: 0
+    },
     rotationSpeed: 0.006,
     increaseStep: 0.003,
     wholeCircle: 2*Math.PI
@@ -29,7 +34,7 @@ export const GAMEFIELD_OPTIONS = {
 
 export const ENEMY_OPTIONS = {
     object: [],
-    link: './src/JSON_Models/TIE_Fighter.json',
+    link: './res/JSON_Models/TIE_Fighter.json',
     rotationSpeed: 0.01,
     radius: 0.5,
     detail: 1,
@@ -37,37 +42,41 @@ export const ENEMY_OPTIONS = {
 };
 
 export const SKYBOX_OPTIONS = {
-    link: './src/images/hubble-min.jpg',
+    link: './res/images/hubble-min.jpg',
     radius: 600,
     segmentsQuantity: 200,
     angleOfSlope: Math.PI/3,
     rotationSpeed: 0.0006,
-    increaseStep: 0//0.0002
+    increaseStep: 0.00000002//0.0002
 };
 
 export const SPACESHIP_OPTIONS = {
-    link: './src/JSON_Models/spaceship.json',
+    link: './res/JSON_Models/spaceship.json',
     inIntroCoordinates: {
+        x: 0,
         y: 88.3,
         z: 92.6
     },
 
     inGameCoordinates: {
-        z: 3.6,
-        y: 1.2//1
+        x: 0,
+        y: 1.2,//1
+        z: 3.6
     },
 
-    flyWidthBorder: WINDOW_OPTIONS.gameWindowWidth*0.002,
-    flyHeightBorder: WINDOW_OPTIONS.gameWindowHeight*0.002,
+    flyWidthBorder: WINDOW_OPTIONS.gameWindowWidth*0.0023,
+    flyHeightBorder: WINDOW_OPTIONS.gameWindowHeight*0.0023,
     turningSpeed: 0.02,
     turningBackSpeed: 0.014,
-    alignmentPosition:0
+    alignmentPosition: 0,
+    circle: 2*Math.PI
 };
 
 export const FIGHTERSCONTAINER_OPTIONS = {
     flySpeed: 0.5,
     increaseStep: 0.04,
     distanceCoordinates: {
+        x: 0,
         y: -30,
         z: -120
     },
@@ -78,13 +87,15 @@ export const FIGHTERSCONTAINER_OPTIONS = {
 export const SCENE3D_OPTIONS = {
     cameraOptions: {
         inIntroCoordinates: {
+            x: 0,
             y: 91,
             z: 96
         },
 
         inGameCoordinates: {
-            z: 7,//6
-            y: 1
+            x: 0,
+            y: 1,
+            z: 7//6
         },
 
         verticalFieldOfView: 60,
@@ -106,17 +117,23 @@ export const AUDIO_OPTIONS = {
 };
 
 export const STARCRUISER_OPTIONS = {
-    link: './src/JSON_Models/destroyer.json',
+    link: './res/JSON_Models/destroyer.json',
     distanceCoordinates: {
+        x: 0,
         y: 15,
         z: -145
     }
 };
 
 export const EXPLOSION_OPTIONS = {
-    link: './src/JSON_Models/explosion.json',
+    link: './res/JSON_Models/explosion.json',
     distanceCoordinates: {
+        x: 0,
         y: 30,
         z: 0
     }
+};
+
+export const FINISH_OPTIONS = {
+    finishCode: 222
 };

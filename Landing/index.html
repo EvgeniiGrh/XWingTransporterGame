@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style/reset.css">
     <link rel="stylesheet" href="style/style.css">
-    <link rel="shortcut icon" href="../src/images/logo.png" type="image/png">
-    <script src="js/js.js"></script>
+    <link rel="shortcut icon" href="../res/images/logo.png" type="image/png">
     <title>About X-Wing Transporter</title>
 </head>
 <body>
@@ -20,11 +19,11 @@
                     </div>
                     <nav class="nav">
                         <ul class="ul-container">
-                            <li><a onclick="initScroll('first'); return false;" href="#">technology</a></li>
-                            <li><a onclick="initScroll('second'); return false;" href="#">controls</a></li>
-                            <li><a onclick="initScroll('third'); return false;" href="#">screenshots</a></li>
-                            <li><a onclick="initScroll('fourth'); return false;" href="#">play</a></li>
-                            <li><a onclick="initScroll('fifth'); return false;" href="#">developers</a></li>
+                            <li><a href="#first">technology</a></li>
+                            <li><a href="#second">controls</a></li>
+                            <li><a href="#third">screenshots</a></li>
+                            <li><a href="#fourth">play</a></li>
+                            <li><a href="#fives">developers</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -48,35 +47,38 @@
                         </div>
                     </div>
                 </div>
+                <a name="first" href="#"></a>
             </div>
         </div>
         <section class="point">
             <div class="inner-container">
                 <div class="point-container">
-                    <h2 id="first" class="section-title">TECHNOLOGY</h2>
+                    <h2 class="section-title">TECHNOLOGY</h2>
                     <p>This game is built using: JavaScript and WebGl</p>
                     <div class="container-tech-img">
-                        <img src="img/Logo-js.png" class="js-log" alt="">
-                        <img src="img/WebGL_Logo.png" class="webgl-log" alt="">
-                        <img src="img/Webpack.png" alt="">
-                        <img src="img/three-js-logo.png" alt="">
+                        <img src="img/Logo-js.png" class="image-tech" alt="">
+                        <img src="img/WebGL_Logo.png" class="image-tech" alt="">
+                        <img src="img/Webpack.png" class="image-tech" alt="">
+                        <img src="img/three-js-logo.png" class="image-tech" alt="">
                     </div>
                 </div>
+                <a name="second" href="#"></a>
             </div>
         </section>
         <section class="point other-color">
             <div class="inner-container">
                 <div class="point-container">
-                    <h2 id="second" class="section-title">CONTROLS</h2>
+                    <h2 class="section-title">CONTROLS</h2>
                     <p>Control of game is pretty simple</p>
                     <img class="mouse-container" src="img/Mouse.gif" alt="">
                 </div>
+                <a name="third" href="#"></a>
             </div>
         </section>
         <section class="point">
             <div class="inner-container">
                 <div class="point-container">
-                    <h2 id="third" class="section-title">SCREENSHOTS</h2>
+                    <h2 class="section-title">SCREENSHOTS</h2>
                     <div class="screen-container">
                         <img class="screen-img" src="img/screen.jpg" alt="">
                         <img class="screen-img" src="img/screen.jpg" alt="">
@@ -84,20 +86,22 @@
                         <img class="screen-img" src="img/screen.jpg" alt="">
                     </div>
                 </div>
+                <a name="fourth" href="#"></a>
             </div>
         </section>
         <section class="point other-color">
             <div class="inner-container">
                 <div class="sec-play">
-                    <h2 id="fourth" class="section-title">PLAY</h2>
+                    <h2 class="section-title">PLAY</h2>
                     <p>Maybe you are the new hope!</p>
                     <div class="play-container">
-                        <a class="play-button" href="">PLAY</a>
+                        <a class="play-button" href="../index.html">PLAY</a>
                     </div>
                     <p class="under-button">
                         May the force be with you
                     </p>
                 </div>
+                <a name="fives" href="#"></a>
             </div>
         </section>
         <section class="developers-block-container">
@@ -150,6 +154,7 @@
             </div>
         </footer>
     </div>
+
 
 </body>
 </html>
