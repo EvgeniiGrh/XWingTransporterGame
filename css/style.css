@@ -16,14 +16,17 @@ canvas {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: black;
+    /*background: black;*/
+    background: url("../src/images/background.jpg") no-repeat 100% 100%;
+    background-size: cover;
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .menu{
-    background: dimgrey;
+    /*background: dimgrey;*/
+    background: rgba(105, 105, 105, 0.7);
     width: 600px;
     height: 500px;
     display: flex;
@@ -49,8 +52,8 @@ a {
 }
 
 .button:hover{
-    border: 3px solid blue;
-    color: blue;
+    border: 3px solid rgba(0, 0, 255, 0.65);
+    color: rgba(0, 0, 255, 0.65);
 }
 
 .hide {
@@ -58,9 +61,12 @@ a {
 }
 
 .loading{
-    width: 300px;
-    height: 300px;
-    color: white;
+    margin: 5px;
+    width: 150px;
+    height: 110px;
+    border: 3px solid rgba(0, 0, 255, 0.65);
+    /*color: white;*/
+    color: rgba(0, 0, 255, 0.75);
     font-size: 50px;
     display: flex;
     justify-content: center;
