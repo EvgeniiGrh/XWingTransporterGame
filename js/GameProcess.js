@@ -4,7 +4,9 @@ import GameField from "./GameField";
 import Spaceship from "./Spaceship";
 import Enemy from "./Enemy";
 import EnemiesContainer from "./EnemiesContainer";
+import StarCruiser from "./StarCruiser";
 import {SCENE3D_OPTIONS, SPACESHIP_OPTIONS, ENEMY_OPTIONS} from "./Constants";
+import Explosion from "./Explosion";
 
 export default class GameProcess {
     constructor() {
@@ -83,17 +85,20 @@ export default class GameProcess {
     }
 
     addEnemies() {
+        this.starCruiser= new StarCruiser();
+        this.scene3D.scene.add(this.starCruiser.mesh);
+
         const enemiesQuantity=Math.floor(30+Math.random()*10);
 
         this.fightersContainer= new EnemiesContainer();
         this.fightersContainer.setPrimaryPosition();
         this.movingObjects.push(this.fightersContainer);
 
-        this.plane=new THREE.ObjectLoader();
-        this.plane.load( ENEMY_OPTIONS.link, ( obj ) => {
+        this.ship=new THREE.ObjectLoader();
+        this.ship.load( ENEMY_OPTIONS.link, ( object ) => {
 
             for(let i=0;i<enemiesQuantity+1;i++) {
-                let copy=obj.clone();
+                let copy=object.clone();
 
                 let enemy = new Enemy();
                 enemy.mesh.add(copy);
@@ -138,6 +143,7 @@ export default class GameProcess {
             this.movingObjects.forEach((item)=>{
                 item.increaseMovementSpeed();
             });
+            this.starCruiser.move()
         }
     }
 
@@ -156,6 +162,7 @@ export default class GameProcess {
 
     checkSpaceshipMovement() {
         this.lastSpaceshipPosition=this.spaceship.mesh.position.x;
+
         if (this.spaceship.isSpaceshipNotMove(this.lastSpaceshipPosition)) {
             this.spaceship.alignSpaceship();
         }
@@ -174,7 +181,7 @@ export default class GameProcess {
         cancelAnimationFrame(this.animationFrameId );
 
         this.scene3D.createCommonLight();
-        this.scene3D.createLights();
+        //this.scene3D.createLights();
         this.scene3D.scene.remove(this.spaceship.mesh);
 
         this.addFireBall();
@@ -183,19 +190,24 @@ export default class GameProcess {
     }
 
     addFireBall() {
-        let sphereGeometry = new THREE.DodecahedronGeometry( 2.7, 1);
-        let sphereMaterial = new THREE.MeshStandardMaterial( { color: 0xd33404 ,shading: THREE.FlatShading} );
-        this.fireBall = new THREE.Mesh( sphereGeometry, sphereMaterial );
+        // let sphereGeometry = new THREE.DodecahedronGeometry( 2.7, 1);
+        // let sphereMaterial = new THREE.MeshStandardMaterial( { color: 0xd33404 ,shading: THREE.FlatShading} );
+        // this.fireBall = new THREE.Mesh( sphereGeometry, sphereMaterial );
+        //
+        // this.fireBall.position.x=this.spaceship.mesh.position.x;
+        // this.fireBall.position.y=this.spaceship.mesh.position.y;
+        // this.fireBall.position.z=this.spaceship.mesh.position.z-2;
 
-        this.fireBall.position.x=this.spaceship.mesh.position.x;
-        this.fireBall.position.y=this.spaceship.mesh.position.y;
-        this.fireBall.position.z=this.spaceship.mesh.position.z-2;
+        this.explosion= new Explosion();
+        this.explosion.mesh.position.x=this.spaceship.mesh.position.x;
+        this.explosion.mesh.position.y=this.spaceship.mesh.position.y+3;
+        this.explosion.mesh.position.z=this.spaceship.mesh.position.z-2;
 
-        this.scene3D.scene.add(this.fireBall);
+        this.scene3D.scene.add(this.explosion.mesh);
     }
 
     animateGameFinish() {
-        this.fireBall.rotation.y+=1;
+        //this.fireBall.rotation.y+=1;
         this.scene3D.renderer.render(this.scene3D.scene, this.scene3D.camera);
         this.scene3D.controls.update();
         this.animationFrameId=requestAnimationFrame(this.animateGameFinish.bind(this));

@@ -11,7 +11,7 @@ export default class Scene3D {
         this.scene = new THREE.Scene();
         this.createCamera();
         this.createRenderer();
-        this.createCommonLight();
+        //this.createCommonLight();
         this.createAudio();
         this.createControls();
     }

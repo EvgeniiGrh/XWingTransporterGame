@@ -104,3 +104,19 @@ export const AUDIO_OPTIONS = {
     fightersFlyAudioLink: './sounds/FightersFly.mp3',
     failAudioLink: './sounds/R2D2.mp3',
 };
+
+export const STARCRUISER_OPTIONS = {
+    link: './src/JSON_Models/destroyer.json',
+    distanceCoordinates: {
+        y: 15,
+        z: -145
+    }
+};
+
+export const EXPLOSION_OPTIONS = {
+    link: './src/JSON_Models/explosion.json',
+    distanceCoordinates: {
+        y: 30,
+        z: 0
+    }
+};

@@ -12,7 +12,7 @@ export default class GameField extends ShapeCreator {
     createMesh() {
         const texture = new THREE.TextureLoader().load( GAMEFIELD_OPTIONS.link );
         const geometry = new THREE.SphereGeometry(GAMEFIELD_OPTIONS.radius,GAMEFIELD_OPTIONS.segmentsQuantity,GAMEFIELD_OPTIONS.segmentsQuantity);
-        const material = new THREE.MeshStandardMaterial({map: texture});
+        const material = new THREE.MeshBasicMaterial({map: texture});
         // material.transparent=true;
         // material.opacity=0;
         this.mesh = new THREE.Mesh( geometry, material );

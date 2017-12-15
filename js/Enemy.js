@@ -9,12 +9,6 @@ export default class Enemy extends ShapeCreator {
 
     createMesh() {
         this.mesh=new THREE.Object3D();
-        //this.mesh.add(temp);
-        // const plane=new THREE.ObjectLoader();
-        // plane.load( ENEMY_OPTIONS.link, ( obj ) => {
-        //     this.mesh.add(obj);
-        // });
-
     }
 
     setRandomPosition() {
