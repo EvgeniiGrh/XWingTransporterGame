@@ -51,7 +51,7 @@ class XWingTransporterGame {
     clearMenu() {
         this.menuScreen.removeChild(this.loading);
         this.menuScreen.classList.add("hide");
-        this.menuSound.stop();
+        this.menuSound.pause();
 
         this.menu.removeChild(this.playButton);
         this.menu.removeChild(this.historyButton);
