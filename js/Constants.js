@@ -26,19 +26,15 @@ export const GAMEFIELD_OPTIONS = {
 export const ENEMY_OPTIONS = {
     object: [],
     link: './res/JSON_Models/TIE_Fighter.json',
-    // rotationSpeed: 0.01,
-    // radius: 0.5,
-    // detail: 1,
-    // color: 0x5c3322
 };
 
 export const SKYBOX_OPTIONS = {
     link: './res/images/hubble-min.jpg',
-    radius: 600,
-    segmentsQuantity: 200,
+    radius: 1100,
+    segmentsQuantity: 300,
     angleOfSlope: Math.PI/3,
     rotationSpeed: 0.0006,
-    increaseStep: 0.00000002//0.0002
+    increaseStep: 0.0000002//0.0002
 };
 
 export const SPACESHIP_OPTIONS = {
@@ -92,7 +88,7 @@ export const SCENE3D_OPTIONS = {
         verticalFieldOfView: 60,
         aspectRatio: WINDOW_OPTIONS.gameWindowWidth / WINDOW_OPTIONS.gameWindowHeight,
         nearPlane: 0.1,
-        farPlane: 1000
+        farPlane: 1250
     },
 
     rendererOptions: {
@@ -105,16 +101,17 @@ export const AUDIO_OPTIONS = {
     mainAudioLink: './sounds/MainSound.mp3',
     fightersFlyAudioLink: './sounds/FightersFly.mp3',
     failAudioLink: './sounds/R2D2.mp3',
+    menuAudioLink: './sounds/MenuSound.mp3'
 };
 
 export const STARCRUISER_OPTIONS = {
     link: './res/JSON_Models/destroyer.json',
     distanceCoordinates: {
         x: 0,
-        y: 15,
-        z: -145
+        y: 8,
+        z: -165
     },
-    turningAngle: 0.03
+    turningAngle: 0.01
 };
 
 export const FINISH_OPTIONS = {

@@ -6,6 +6,7 @@ class XWingTransporterGame {
         this.canvas = document.getElementById("canvas");
         this.menuScreen = document.querySelector("#menu-screen");
         this.menu=document.querySelector("#menu");
+        this.menuSound=document.querySelector("#menuSound");
 
         this.historyButton=document.querySelector("#history");
         this.playButton=document.querySelector("#play");
@@ -50,6 +51,7 @@ class XWingTransporterGame {
     clearMenu() {
         this.menuScreen.removeChild(this.loading);
         this.menuScreen.classList.add("hide");
+        this.menuSound.stop();
 
         this.menu.removeChild(this.playButton);
         this.menu.removeChild(this.historyButton);
