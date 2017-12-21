@@ -99,11 +99,21 @@ const GAMEFIELD_OPTIONS = {
 /* harmony export (immutable) */ __webpack_exports__["e"] = GAMEFIELD_OPTIONS;
 
 
-const ENEMY_OPTIONS = {
+const ENEMIES_OPTIONS = {
     object: [],
     link: './res/JSON_Models/TIE_Fighter.json',
+    minQuantity: 33,
+    interval: 12,
+    positionBorders: {
+        xBottomBorder: -3,
+        xInterval: 6,
+        yBottomBorder: 29.5,
+        yInterval: 3,
+        zBottomBorder: -19,
+        zInterval: 38
+    }
 };
-/* harmony export (immutable) */ __webpack_exports__["b"] = ENEMY_OPTIONS;
+/* harmony export (immutable) */ __webpack_exports__["b"] = ENEMIES_OPTIONS;
 
 
 const SKYBOX_OPTIONS = {
@@ -112,7 +122,7 @@ const SKYBOX_OPTIONS = {
     segmentsQuantity: 300,
     angleOfSlope: Math.PI/3,
     rotationSpeed: 0.0006,
-    increaseStep: 0.0000002//0.0002
+    increaseStep: 0.0000002
 };
 /* harmony export (immutable) */ __webpack_exports__["h"] = SKYBOX_OPTIONS;
 
@@ -127,12 +137,14 @@ const SPACESHIP_OPTIONS = {
 
     inGameCoordinates: {
         x: 0,
-        y: 1.2,//1
+        y: 1.2,
         z: 3.6
     },
 
     flyWidthBorder: WINDOW_OPTIONS.gameWindowWidth*0.0023,
     flyHeightBorder: WINDOW_OPTIONS.gameWindowHeight*0.0023,
+    flyYTopMaxCoordinate: 2.5,
+    flyYBottomMaxCoordinate: -0.52,
     turningSpeed: 0.02,
     turningBackSpeed: 0.014,
     alignmentPosition: 0,
@@ -147,10 +159,10 @@ const FIGHTERSCONTAINER_OPTIONS = {
     distanceCoordinates: {
         x: 0,
         y: -30.2,
-        z: -120
+        z: -90
     },
-    maxZCoordinate: 15,
-    coordinateZToPlaySound: -14
+    maxZCoordinate: 27,
+    coordinateZToPlaySound: 0
 };
 /* harmony export (immutable) */ __webpack_exports__["c"] = FIGHTERSCONTAINER_OPTIONS;
 
@@ -186,7 +198,7 @@ const SCENE3D_OPTIONS = {
 const AUDIO_OPTIONS = {
     mainAudioLink: './sounds/MainSound.mp3',
     fightersFlyAudioLink: './sounds/FightersFly.mp3',
-    failAudioLink: './sounds/R2D2.mp3',
+    failAudioLink: './sounds/FinalSound.mp3',
     menuAudioLink: './sounds/MenuSound.mp3'
 };
 /* harmony export (immutable) */ __webpack_exports__["a"] = AUDIO_OPTIONS;
@@ -196,7 +208,7 @@ const STARCRUISER_OPTIONS = {
     link: './res/JSON_Models/destroyer.json',
     distanceCoordinates: {
         x: 0,
-        y: 8,
+        y: 6,
         z: -165
     },
     turningAngle: 0.01
@@ -246,6 +258,7 @@ class XWingTransporterGame {
         this.menuScreen = document.querySelector("#menu-screen");
         this.menu=document.querySelector("#menu");
         this.menuSound=document.querySelector("#menuSound");
+        this.scoreBlock=document.querySelector('#score');
 
         this.historyButton=document.querySelector("#history");
         this.playButton=document.querySelector("#play");
@@ -277,6 +290,8 @@ class XWingTransporterGame {
             if(percent === 103) {
                 this.canvas.classList.add("hide-cursor");
                 this.clearMenu();
+                this.scoreBlock.classList.remove('hide');
+
                 this.game.startIntro();
                 this.setPauseListeners();
                 clearInterval(id);
@@ -384,11 +399,9 @@ new XWingTransporterGame();
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__SkyBox__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__GameField__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Spaceship__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Enemy__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__EnemiesContainer__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__StarCruiser__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Constants__ = __webpack_require__(0);
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__FightersContainer__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__StarCruiser__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Constants__ = __webpack_require__(0);
 
 
 
@@ -400,12 +413,12 @@ new XWingTransporterGame();
 class GameProcess {
     constructor(canvas) {
         this.movingObjects=[];
-        this.enemiesArray=[];
         this.inGame=true;
         this.firstGame=true;
         this.finish=false;
         this.lastSpaceshipPosition=null;
         this.canvas = canvas;
+        this.scoreResults=document.querySelector('#score-results');
     };
 
     init() {
@@ -422,8 +435,8 @@ class GameProcess {
         this.spaceship = new __WEBPACK_IMPORTED_MODULE_3__Spaceship__["a" /* default */]();
         this.scene3D.scene.add(this.spaceship.mesh);
 
+        debugger;
         this.addEnemies();
-
     }
 
     startIntro() {
@@ -442,25 +455,25 @@ class GameProcess {
     }
 
     introMovement() {
-        if (this.scene3D.camera.position.z > __WEBPACK_IMPORTED_MODULE_7__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.z) {
+        if (this.scene3D.camera.position.z > __WEBPACK_IMPORTED_MODULE_6__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.z) {
             this.scene3D.camera.position.z--;
         }
-        if (this.scene3D.camera.position.y > __WEBPACK_IMPORTED_MODULE_7__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.y) {
+        if (this.scene3D.camera.position.y > __WEBPACK_IMPORTED_MODULE_6__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.y) {
             this.scene3D.camera.position.y--;
         }
 
         //DEBUG IT
-        if (this.spaceship.mesh.position.z > __WEBPACK_IMPORTED_MODULE_7__Constants__["i" /* SPACESHIP_OPTIONS */].inGameCoordinates.z) {
+        if (this.spaceship.mesh.position.z > __WEBPACK_IMPORTED_MODULE_6__Constants__["i" /* SPACESHIP_OPTIONS */].inGameCoordinates.z) {
             this.spaceship.mesh.position.z--;
         }
-        if (this.spaceship.mesh.position.y > __WEBPACK_IMPORTED_MODULE_7__Constants__["i" /* SPACESHIP_OPTIONS */].inGameCoordinates.y) {
+        if (this.spaceship.mesh.position.y > __WEBPACK_IMPORTED_MODULE_6__Constants__["i" /* SPACESHIP_OPTIONS */].inGameCoordinates.y) {
             this.spaceship.mesh.position.y--;
         }
     }
 
     isIntroEnd() {
-        if (this.scene3D.camera.position.y === __WEBPACK_IMPORTED_MODULE_7__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.y &&
-            this.scene3D.camera.position.z === __WEBPACK_IMPORTED_MODULE_7__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.z) {
+        if (this.scene3D.camera.position.y === __WEBPACK_IMPORTED_MODULE_6__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.y &&
+            this.scene3D.camera.position.z === __WEBPACK_IMPORTED_MODULE_6__Constants__["g" /* SCENE3D_OPTIONS */].cameraOptions.inGameCoordinates.z) {
             return true;
         }
     }
@@ -475,7 +488,7 @@ class GameProcess {
             if (!this.lastSpaceshipPosition) {
                 this.animateIntro();
             } else {
-                this.spaceship.mesh.rotation.z=__WEBPACK_IMPORTED_MODULE_7__Constants__["i" /* SPACESHIP_OPTIONS */].turningBackSpeed;
+                this.spaceship.mesh.rotation.z=__WEBPACK_IMPORTED_MODULE_6__Constants__["i" /* SPACESHIP_OPTIONS */].turningBackSpeed;
                 this.animateGameProcess();
             }
 
@@ -499,47 +512,15 @@ class GameProcess {
     }
 
     addEnemies() {
-        this.starCruiser= new __WEBPACK_IMPORTED_MODULE_6__StarCruiser__["a" /* default */]();
+        this.starCruiser= new __WEBPACK_IMPORTED_MODULE_5__StarCruiser__["a" /* default */]();
         this.scene3D.scene.add(this.starCruiser.mesh);
 
-        const enemiesQuantity=Math.floor(35+Math.random()*10);
-
-        this.fightersContainer= new __WEBPACK_IMPORTED_MODULE_5__EnemiesContainer__["a" /* default */]();
+        this.fightersContainer= new __WEBPACK_IMPORTED_MODULE_4__FightersContainer__["a" /* default */]();
         this.fightersContainer.setPrimaryPosition();
         this.fightersContainer.setPrimarySpeed();
         this.movingObjects.push(this.fightersContainer);
 
-        this.shipLoader=new THREE.ObjectLoader();
-        this.shipLoader.load( __WEBPACK_IMPORTED_MODULE_7__Constants__["b" /* ENEMY_OPTIONS */].link, ( object ) => {
-
-            for(let i=0;i<enemiesQuantity+1;i++) {
-                let copy=object.clone();
-
-                let enemy = new __WEBPACK_IMPORTED_MODULE_4__Enemy__["a" /* default */]();
-                enemy.mesh.add(copy);
-                enemy.setRandomPosition();
-
-                if (i!==0) {
-                    this.checkEnemiesDistribution(enemy);
-                }
-
-                this.enemiesArray.push(enemy);
-                this.fightersContainer.mesh.add(enemy.mesh);
-            }
-
-        });
-    }
-
-    checkEnemiesDistribution(enemy) {//so the coordinates of each enemy don't match other enemies
-        while (this.enemiesArray.some(
-            (item) => {
-                return (item.mesh.position.x===enemy.mesh.position.x ||
-                    item.mesh.position.y===enemy.mesh.position.y ||
-                    item.mesh.position.z===enemy.mesh.position.z);
-            }
-        )) {
-            enemy.setRandomPosition();
-        }
+        this.fightersContainer.createFighters();
     }
 
     animateGameProcess() {
@@ -572,10 +553,17 @@ class GameProcess {
 
         if (this.fightersContainer.isBehindCamera()) {
             this.fightersContainer.setPrimaryPosition();
-            this.enemiesArray.forEach((item) => {
-                item.setRandomPosition();
-            });
+            this.increaseScore();
+            this.fightersContainer.randomizeEnemies();
         }
+    }
+
+    increaseScore() {
+        this.scoreResults.innerText++;
+    }
+
+    resetScore() {
+        this.scoreResults.innerText=0;
     }
 
     checkSpaceshipMovement() {
@@ -587,7 +575,7 @@ class GameProcess {
     }
 
     checkCollision() {
-        this.enemiesArray.forEach(( enemy ) => {
+        this.fightersContainer.enemiesArray.forEach(( enemy ) => {
             this.enemyPosition.setFromMatrixPosition( enemy.mesh.matrixWorld );
                 if (this.enemyPosition.manhattanDistanceTo(this.spaceship.mesh.position)<=0.9) {
                     this.finishGame();
@@ -605,7 +593,6 @@ class GameProcess {
     }
 
     restart() {
-        //debugger;
         this.scene3D.scene.remove(this.fightersContainer.mesh);
         this.scene3D.audio.stopMainSound();
 
@@ -619,6 +606,7 @@ class GameProcess {
         this.inGame=true;
         this.finish=false;
         this.lastSpaceshipPosition=null;
+        this.resetScore();
 
         if (this.spaceship.inListening) {
             this.firstGame=false;
@@ -628,7 +616,7 @@ class GameProcess {
 
     showFinishWindow() {
         const event = new Event("keydown");
-        event.keyCode = __WEBPACK_IMPORTED_MODULE_7__Constants__["d" /* FINISH_OPTIONS */].finishCode;
+        event.keyCode = __WEBPACK_IMPORTED_MODULE_6__Constants__["d" /* FINISH_OPTIONS */].finishCode;
         document.dispatchEvent(event);
     }
 }
@@ -731,7 +719,7 @@ class Audio {
         this.audioLoader.load( __WEBPACK_IMPORTED_MODULE_0__Constants__["a" /* AUDIO_OPTIONS */].mainAudioLink, ( buffer ) => {
             this.mainSound.setBuffer( buffer );
             this.mainSound.setLoop( true );
-            this.mainSound.setVolume( 0.4 );
+            this.mainSound.setVolume( 0.3 );
         });
     }
 
@@ -740,7 +728,7 @@ class Audio {
         this.audioLoader.load( __WEBPACK_IMPORTED_MODULE_0__Constants__["a" /* AUDIO_OPTIONS */].fightersFlyAudioLink, ( buffer ) => {
             this.fightersFly.setBuffer( buffer );
             this.fightersFly.setLoop( false );
-            this.fightersFly.setVolume( 0.55 );
+            this.fightersFly.setVolume( 0.2 );
         });
     }
 
@@ -925,7 +913,7 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
         let ty = 1 - (event.clientY / __WEBPACK_IMPORTED_MODULE_1__Constants__["k" /* WINDOW_OPTIONS */].gameWindowHeight)*2;
 
         const currentX = this.normalizePosition(tx, -1, 1, -__WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].flyWidthBorder, __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].flyWidthBorder);
-        const currentY = this.normalizePosition(ty, -1, 1, -0.52, 2.5);//-0.47, 1.6//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
+        const currentY = this.normalizePosition(ty, -1, 1, __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].flyYBottomMaxCoordinate, __WEBPACK_IMPORTED_MODULE_1__Constants__["i" /* SPACESHIP_OPTIONS */].flyYTopMaxCoordinate);
 
         this.mesh.position.x = currentX;
         this.mesh.position.y = currentY;
@@ -983,6 +971,8 @@ class Spaceship extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* defau
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Constants__ = __webpack_require__(0);
+
 
 
 class Enemy extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default */] {
@@ -996,13 +986,13 @@ class Enemy extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default *
     }
 
     setRandomPosition() {
-        let xpos = -13+Math.random()*(26);
-        let ypos = 29.5+Math.random()*(6);
-        let zpos = -10.5+Math.random()*(20);
+        let xPosition = __WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* ENEMIES_OPTIONS */].positionBorders.xBottomBorder+Math.random()*(__WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* ENEMIES_OPTIONS */].positionBorders.xInterval);//-3+Math.random()*(6);
+        let yPosition = __WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* ENEMIES_OPTIONS */].positionBorders.yBottomBorder+Math.random()*(__WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* ENEMIES_OPTIONS */].positionBorders.yInterval);//29.5+Math.random()*(3.8);
+        let zPosition = __WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* ENEMIES_OPTIONS */].positionBorders.zBottomBorder+Math.random()*(__WEBPACK_IMPORTED_MODULE_1__Constants__["b" /* ENEMIES_OPTIONS */].positionBorders.zInterval);//-18+Math.random()*(36);
 
-        this.mesh.position.x = xpos;
-        this.mesh.position.y = ypos;
-        this.mesh.position.z = zpos;
+        this.mesh.position.x = xPosition;
+        this.mesh.position.y = yPosition;
+        this.mesh.position.z = zPosition;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Enemy;
@@ -1010,54 +1000,7 @@ class Enemy extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default *
 
 
 /***/ }),
-/* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Constants__ = __webpack_require__(0);
-
-
-
-class EnemiesContainer extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default */]{
-    constructor() {
-        super();
-    }
-
-    createMesh() {
-        this.mesh=new THREE.Object3D();
-    }
-
-    setPrimaryPosition() {
-        this.mesh.position.z=__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].distanceCoordinates.z;
-        this.mesh.position.y=__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].distanceCoordinates.y;
-    }
-
-    setPrimarySpeed() {
-        this.movementSpeed=__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].flySpeed;
-    }
-
-    isBehindCamera() {
-        return this.mesh.position.z>__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].maxZCoordinate;
-    }
-
-    isNearTheSpaceship() {
-        return this.mesh.position.z>__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].coordinateZToPlaySound;
-    }
-
-    movement() {
-        this.mesh.position.z+=this.movementSpeed;
-    }
-
-    increaseMovementSpeed() {
-        this.movementSpeed+=__WEBPACK_IMPORTED_MODULE_1__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].increaseStep;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = EnemiesContainer;
-
-
-
-/***/ }),
+/* 10 */,
 /* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1097,6 +1040,101 @@ class StarCruiser extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* def
 
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = StarCruiser;
+
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Enemy__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Constants__ = __webpack_require__(0);
+
+
+
+
+class FightersContainer extends __WEBPACK_IMPORTED_MODULE_0__ShapeCreator__["a" /* default */]{
+    constructor() {
+        super();
+        this.enemiesArray=[];
+    }
+
+    createMesh() {
+        this.mesh=new THREE.Object3D();
+    }
+
+    createFighters() {
+        this.enemiesQuantity=Math.floor(__WEBPACK_IMPORTED_MODULE_2__Constants__["b" /* ENEMIES_OPTIONS */].minQuantity+Math.random()*__WEBPACK_IMPORTED_MODULE_2__Constants__["b" /* ENEMIES_OPTIONS */].interval);
+
+        this.modelLoader=new THREE.ObjectLoader();
+        this.modelLoader.load( __WEBPACK_IMPORTED_MODULE_2__Constants__["b" /* ENEMIES_OPTIONS */].link, ( object ) => {
+
+            for(let i=0;i<this.enemiesQuantity+1;i++) {
+                const copy=object.clone();
+                const enemy = new __WEBPACK_IMPORTED_MODULE_1__Enemy__["a" /* default */]();
+                enemy.mesh.add(copy);
+
+                this.addFighter(enemy);
+            }
+            this.randomizeEnemies();
+        });
+    }
+
+    addFighter(enemy) {
+        enemy.setRandomPosition();
+
+        this.enemiesArray.push(enemy);
+        this.mesh.add(enemy.mesh);
+    }
+
+    checkEnemiesDistribution(enemy) {//so the coordinates of each enemy don't match other enemies
+        while (this.enemiesArray.some(
+            (item) => {
+                return (item.mesh.position.x===enemy.mesh.position.x ||
+                    item.mesh.position.y===enemy.mesh.position.y ||
+                    item.mesh.position.z===enemy.mesh.position.z) &&
+                    item!==enemy;
+            }
+        )) {
+            enemy.setRandomPosition();
+        }
+    }
+
+    randomizeEnemies() {
+        this.enemiesArray.forEach((item) => {
+            item.setRandomPosition();
+            this.checkEnemiesDistribution(item);
+        });
+    }
+
+    setPrimaryPosition() {
+        this.mesh.position.z=__WEBPACK_IMPORTED_MODULE_2__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].distanceCoordinates.z;
+        this.mesh.position.y=__WEBPACK_IMPORTED_MODULE_2__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].distanceCoordinates.y;
+    }
+
+    setPrimarySpeed() {
+        this.movementSpeed=__WEBPACK_IMPORTED_MODULE_2__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].flySpeed;
+    }
+
+    isBehindCamera() {
+        return this.mesh.position.z>__WEBPACK_IMPORTED_MODULE_2__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].maxZCoordinate;
+    }
+
+    isNearTheSpaceship() {
+        return this.mesh.position.z>__WEBPACK_IMPORTED_MODULE_2__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].coordinateZToPlaySound;
+    }
+
+    movement() {
+        this.mesh.position.z+=this.movementSpeed;
+    }
+
+    increaseMovementSpeed() {
+        this.movementSpeed+=__WEBPACK_IMPORTED_MODULE_2__Constants__["c" /* FIGHTERSCONTAINER_OPTIONS */].increaseStep;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = FightersContainer;
 
 
 

@@ -1,5 +1,5 @@
 import ShapeCreator from "./ShapeCreator";
-import {ENEMY_OPTIONS, SPACESHIP_OPTIONS, WINDOW_OPTIONS} from "./Constants";
+import {SPACESHIP_OPTIONS, WINDOW_OPTIONS} from "./Constants";
 
 export default class Spaceship extends ShapeCreator {
 
@@ -34,7 +34,7 @@ export default class Spaceship extends ShapeCreator {
         let ty = 1 - (event.clientY / WINDOW_OPTIONS.gameWindowHeight)*2;
 
         const currentX = this.normalizePosition(tx, -1, 1, -SPACESHIP_OPTIONS.flyWidthBorder, SPACESHIP_OPTIONS.flyWidthBorder);
-        const currentY = this.normalizePosition(ty, -1, 1, -0.52, 2.5);//-0.47, 1.6//-SPACESHIP_OPTIONS.flyHeightBorder+1,SPACESHIP_OPTIONS.flyHeightBorder+0.5);
+        const currentY = this.normalizePosition(ty, -1, 1, SPACESHIP_OPTIONS.flyYBottomMaxCoordinate, SPACESHIP_OPTIONS.flyYTopMaxCoordinate);
 
         this.mesh.position.x = currentX;
         this.mesh.position.y = currentY;

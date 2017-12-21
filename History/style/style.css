@@ -5,17 +5,20 @@
 
 *{
     background-color: black;
+    user-select: none;
 }
 
 .wrapper {
     background-color: black;
-    color: orange;
+    color: gold;
     width: 100%;
     flex-direction: column;
     height: 100%;
     display: flex;
     align-items: center;
+    font-weight: bold;
     justify-content: center;
+    cursor: none;
 }
 
 .begin {
@@ -37,7 +40,7 @@
 .game-logo{
     font-size: 90px;
     line-height: 0.8em;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.025em;
     color: #000;
     text-shadow: -2px -2px 0 #ff6, 2px -2px 0 #ff6, 2px 2px 0 #ff6;
     opacity: 0;
@@ -101,7 +104,7 @@
 }
 
 .text-paragraph{
-    margin: 0.8em 0;
+    margin: 1.9em 0;
 }
 
 .text-container p.center{
@@ -125,6 +128,6 @@
 
 .allotted{
     color: orangered;
-    text-decoration: underline;
+    font-style: italic;
 }
 

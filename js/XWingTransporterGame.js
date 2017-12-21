@@ -7,6 +7,7 @@ class XWingTransporterGame {
         this.menuScreen = document.querySelector("#menu-screen");
         this.menu=document.querySelector("#menu");
         this.menuSound=document.querySelector("#menuSound");
+        this.scoreBlock=document.querySelector('#score');
 
         this.historyButton=document.querySelector("#history");
         this.playButton=document.querySelector("#play");
@@ -38,6 +39,8 @@ class XWingTransporterGame {
             if(percent === 103) {
                 this.canvas.classList.add("hide-cursor");
                 this.clearMenu();
+                this.scoreBlock.classList.remove('hide');
+
                 this.game.startIntro();
                 this.setPauseListeners();
                 clearInterval(id);

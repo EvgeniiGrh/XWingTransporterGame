@@ -2,20 +2,19 @@ import Scene3D from "./Scene3D";
 import SkyBox from "./SkyBox";
 import GameField from "./GameField";
 import Spaceship from "./Spaceship";
-import Enemy from "./Enemy";
-import EnemiesContainer from "./EnemiesContainer";
+import FightersContainer from "./FightersContainer";
 import StarCruiser from "./StarCruiser";
-import {SCENE3D_OPTIONS, SPACESHIP_OPTIONS, ENEMY_OPTIONS, FINISH_OPTIONS} from "./Constants";
+import {SCENE3D_OPTIONS, SPACESHIP_OPTIONS, FINISH_OPTIONS} from "./Constants";
 
 export default class GameProcess {
     constructor(canvas) {
         this.movingObjects=[];
-        this.enemiesArray=[];
         this.inGame=true;
         this.firstGame=true;
         this.finish=false;
         this.lastSpaceshipPosition=null;
         this.canvas = canvas;
+        this.scoreResults=document.querySelector('#score-results');
     };
 
     init() {
@@ -32,8 +31,8 @@ export default class GameProcess {
         this.spaceship = new Spaceship();
         this.scene3D.scene.add(this.spaceship.mesh);
 
+        debugger;
         this.addEnemies();
-
     }
 
     startIntro() {
@@ -112,44 +111,12 @@ export default class GameProcess {
         this.starCruiser= new StarCruiser();
         this.scene3D.scene.add(this.starCruiser.mesh);
 
-        const enemiesQuantity=Math.floor(35+Math.random()*10);
-
-        this.fightersContainer= new EnemiesContainer();
+        this.fightersContainer= new FightersContainer();
         this.fightersContainer.setPrimaryPosition();
         this.fightersContainer.setPrimarySpeed();
         this.movingObjects.push(this.fightersContainer);
 
-        this.shipLoader=new THREE.ObjectLoader();
-        this.shipLoader.load( ENEMY_OPTIONS.link, ( object ) => {
-
-            for(let i=0;i<enemiesQuantity+1;i++) {
-                let copy=object.clone();
-
-                let enemy = new Enemy();
-                enemy.mesh.add(copy);
-                enemy.setRandomPosition();
-
-                if (i!==0) {
-                    this.checkEnemiesDistribution(enemy);
-                }
-
-                this.enemiesArray.push(enemy);
-                this.fightersContainer.mesh.add(enemy.mesh);
-            }
-
-        });
-    }
-
-    checkEnemiesDistribution(enemy) {//so the coordinates of each enemy don't match other enemies
-        while (this.enemiesArray.some(
-            (item) => {
-                return (item.mesh.position.x===enemy.mesh.position.x ||
-                    item.mesh.position.y===enemy.mesh.position.y ||
-                    item.mesh.position.z===enemy.mesh.position.z);
-            }
-        )) {
-            enemy.setRandomPosition();
-        }
+        this.fightersContainer.createFighters();
     }
 
     animateGameProcess() {
@@ -182,10 +149,17 @@ export default class GameProcess {
 
         if (this.fightersContainer.isBehindCamera()) {
             this.fightersContainer.setPrimaryPosition();
-            this.enemiesArray.forEach((item) => {
-                item.setRandomPosition();
-            });
+            this.increaseScore();
+            this.fightersContainer.randomizeEnemies();
         }
+    }
+
+    increaseScore() {
+        this.scoreResults.innerText++;
+    }
+
+    resetScore() {
+        this.scoreResults.innerText=0;
     }
 
     checkSpaceshipMovement() {
@@ -197,7 +171,7 @@ export default class GameProcess {
     }
 
     checkCollision() {
-        this.enemiesArray.forEach(( enemy ) => {
+        this.fightersContainer.enemiesArray.forEach(( enemy ) => {
             this.enemyPosition.setFromMatrixPosition( enemy.mesh.matrixWorld );
                 if (this.enemyPosition.manhattanDistanceTo(this.spaceship.mesh.position)<=0.9) {
                     this.finishGame();
@@ -215,7 +189,6 @@ export default class GameProcess {
     }
 
     restart() {
-        //debugger;
         this.scene3D.scene.remove(this.fightersContainer.mesh);
         this.scene3D.audio.stopMainSound();
 
@@ -229,6 +202,7 @@ export default class GameProcess {
         this.inGame=true;
         this.finish=false;
         this.lastSpaceshipPosition=null;
+        this.resetScore();
 
         if (this.spaceship.inListening) {
             this.firstGame=false;

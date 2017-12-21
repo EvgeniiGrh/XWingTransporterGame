@@ -19,7 +19,7 @@ export default class Audio {
         this.audioLoader.load( AUDIO_OPTIONS.mainAudioLink, ( buffer ) => {
             this.mainSound.setBuffer( buffer );
             this.mainSound.setLoop( true );
-            this.mainSound.setVolume( 0.4 );
+            this.mainSound.setVolume( 0.3 );
         });
     }
 
@@ -28,7 +28,7 @@ export default class Audio {
         this.audioLoader.load( AUDIO_OPTIONS.fightersFlyAudioLink, ( buffer ) => {
             this.fightersFly.setBuffer( buffer );
             this.fightersFly.setLoop( false );
-            this.fightersFly.setVolume( 0.55 );
+            this.fightersFly.setVolume( 0.2 );
         });
     }
 

@@ -23,9 +23,19 @@ export const GAMEFIELD_OPTIONS = {
     wholeCircle: 2*Math.PI
 };
 
-export const ENEMY_OPTIONS = {
+export const ENEMIES_OPTIONS = {
     object: [],
     link: './res/JSON_Models/TIE_Fighter.json',
+    minQuantity: 33,
+    interval: 12,
+    positionBorders: {
+        xBottomBorder: -3,
+        xInterval: 6,
+        yBottomBorder: 29.5,
+        yInterval: 3,
+        zBottomBorder: -19,
+        zInterval: 38
+    }
 };
 
 export const SKYBOX_OPTIONS = {
@@ -34,7 +44,7 @@ export const SKYBOX_OPTIONS = {
     segmentsQuantity: 300,
     angleOfSlope: Math.PI/3,
     rotationSpeed: 0.0006,
-    increaseStep: 0.0000002//0.0002
+    increaseStep: 0.0000002
 };
 
 export const SPACESHIP_OPTIONS = {
@@ -47,12 +57,14 @@ export const SPACESHIP_OPTIONS = {
 
     inGameCoordinates: {
         x: 0,
-        y: 1.2,//1
+        y: 1.2,
         z: 3.6
     },
 
     flyWidthBorder: WINDOW_OPTIONS.gameWindowWidth*0.0023,
     flyHeightBorder: WINDOW_OPTIONS.gameWindowHeight*0.0023,
+    flyYTopMaxCoordinate: 2.5,
+    flyYBottomMaxCoordinate: -0.52,
     turningSpeed: 0.02,
     turningBackSpeed: 0.014,
     alignmentPosition: 0,
@@ -65,10 +77,10 @@ export const FIGHTERSCONTAINER_OPTIONS = {
     distanceCoordinates: {
         x: 0,
         y: -30.2,
-        z: -120
+        z: -90
     },
-    maxZCoordinate: 15,
-    coordinateZToPlaySound: -14
+    maxZCoordinate: 27,
+    coordinateZToPlaySound: 0
 };
 
 export const SCENE3D_OPTIONS = {
@@ -100,7 +112,7 @@ export const SCENE3D_OPTIONS = {
 export const AUDIO_OPTIONS = {
     mainAudioLink: './sounds/MainSound.mp3',
     fightersFlyAudioLink: './sounds/FightersFly.mp3',
-    failAudioLink: './sounds/R2D2.mp3',
+    failAudioLink: './sounds/FinalSound.mp3',
     menuAudioLink: './sounds/MenuSound.mp3'
 };
 
@@ -108,7 +120,7 @@ export const STARCRUISER_OPTIONS = {
     link: './res/JSON_Models/destroyer.json',
     distanceCoordinates: {
         x: 0,
-        y: 8,
+        y: 6,
         z: -165
     },
     turningAngle: 0.01
