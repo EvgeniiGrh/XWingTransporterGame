@@ -322,13 +322,14 @@ class XWingTransporterGame {
         });
 
         document.addEventListener('keydown', (event) => {
-            if (event.keyCode===27) {
+            if (event.keyCode===27 && !this.game.finish && this.game.inGame) {
                 this.game.pause(this.menuScreen);
             }
 
             if (event.keyCode===__WEBPACK_IMPORTED_MODULE_1__Constants__["d" /* FINISH_OPTIONS */].finishCode) {
                 this.createFinishMenu();
                 this.game.pause(this.menuScreen);
+
             }
         });
 
@@ -402,6 +403,7 @@ class GameProcess {
         this.enemiesArray=[];
         this.inGame=true;
         this.firstGame=true;
+        this.finish=false;
         this.lastSpaceshipPosition=null;
         this.canvas = canvas;
     };
@@ -594,6 +596,7 @@ class GameProcess {
     }
 
     finishGame() {
+        this.finish=true;
         cancelAnimationFrame(this.animationFrameId);
         this.scene3D.audio.playFailSound();
         this.scene3D.audio.stopMainSound();
@@ -602,7 +605,7 @@ class GameProcess {
     }
 
     restart() {
-        debugger;
+        //debugger;
         this.scene3D.scene.remove(this.fightersContainer.mesh);
         this.scene3D.audio.stopMainSound();
 
@@ -614,6 +617,7 @@ class GameProcess {
         this.spaceship.setPrimaryPosition();
         this.scene3D.setCameraPrimaryPosition();
         this.inGame=true;
+        this.finish=false;
         this.lastSpaceshipPosition=null;
 
         if (this.spaceship.inListening) {

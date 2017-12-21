@@ -83,13 +83,14 @@ class XWingTransporterGame {
         });
 
         document.addEventListener('keydown', (event) => {
-            if (event.keyCode===27) {
+            if (event.keyCode===27 && !this.game.finish && this.game.inGame) {
                 this.game.pause(this.menuScreen);
             }
 
             if (event.keyCode===FINISH_OPTIONS.finishCode) {
                 this.createFinishMenu();
                 this.game.pause(this.menuScreen);
+
             }
         });
 
